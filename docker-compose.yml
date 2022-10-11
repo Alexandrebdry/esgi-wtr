@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  front-end:
+    image: node:alpine
+    working_dir: /usr/local/server
+    volumes:
+      - ./:/usr/local/server
+    environment:
+      - PORT=3000
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3010:3010"
+    command: sh -c "npm i --workspace=front-end && npm run start --workspace=front-end"
+
+  back-end:
+    image: node:alpine
+    working_dir: /usr/local/server
+    volumes:
+      - ./:/usr/local/server
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgres://wtr_prj:wtr_pwd@db:5432/messagerie
+      - JWT_SECRET=WEB_TEMPS_REEL_PROJET_MESSAGERIE
+    ports:
+      - "127.0.0.1:4000:4000"
+    command: sh -c "npm install --workspace=back-end && npm run start --workspace=back-end"
+
+  db:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_USER=wtr
+      - POSTGRES_PASSWORD=wtr
+      - POSTGRES_DB=messagerie
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
+
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+    database: {}
+

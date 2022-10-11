@@ -1,0 +1,9 @@
+{
+  "name": "projet",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "front-end",
+    "back-end"
+  ]
+}
