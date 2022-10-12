@@ -2,6 +2,19 @@ version: '3.8'
 
 services:
 
+  back-end:
+    image: node:alpine
+    working_dir: /usr/local/server
+    volumes:
+      - ./:/usr/local/server
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgres://wtrprj:wtrpwd@database/messagerie
+      - JWT_SECRET=WEB_TEMPS_REEL_PROJET_MESSAGERIE_SECRET
+    ports:
+      - "127.0.0.1:4000:4000"
+    command: sh -c " npm install --workspace=back-end && npm run start --workspace=back-end"
+
   front-end:
     image: node:alpine
     working_dir: /usr/local/server
@@ -12,35 +25,21 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
       - "127.0.0.1:3010:3010"
-    command: sh -c "npm i --workspace=front-end && npm run start --workspace=front-end"
+    command: sh -c " npm install --workspace=front-end && npm run start --workspace=front-end"
 
-  back-end:
-    image: node:alpine
-    working_dir: /usr/local/server
+  database:
+    image: postgres:14-alpine
+    restart: always
     volumes:
-      - ./:/usr/local/server
+      - database:/var/lib/postgresql/data
     environment:
-      - PORT=4000
-      - DATABASE_URL=postgres://wtr_prj:wtr_pwd@db:5432/messagerie
-      - JWT_SECRET=WEB_TEMPS_REEL_PROJET_MESSAGERIE
-    ports:
-      - "127.0.0.1:4000:4000"
-    command: sh -c "npm install --workspace=back-end && npm run start --workspace=back-end"
-
-  db:
-    image: postgres:alpine
-    environment:
-      - POSTGRES_USER=wtr
-      - POSTGRES_PASSWORD=wtr
+      - POSTGRES_USER=wtrprj
+      - POSTGRES_PASSWORD=wtrpwd
       - POSTGRES_DB=messagerie
     ports:
       - target: 5432
         published: 5432
         protocol: tcp
 
-    volumes:
-      - database:/var/lib/postgresql/data
-
 volumes:
-    database: {}
-
+  database: {}
