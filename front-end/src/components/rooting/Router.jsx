@@ -3,6 +3,9 @@ import {Route, Routes} from "react-router-dom";
 import {Suspense} from "react";
 import NotFound from "../pages/errors/NotFound";
 import Home from "../pages/Home";
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
+import RegisterConfirmation from "../pages/auth/RegisterConfirmation";
 
 export const useRoutes = () => {
     const routes = [
@@ -12,6 +15,30 @@ export const useRoutes = () => {
             element:
                 <RouterSecured>
                     <Home/>
+                </RouterSecured>
+        },
+        {
+            name:'login',
+            path: '/login',
+            element:
+            <RouterSecured>
+                <Login/>
+            </RouterSecured>
+        },
+        {
+            name: 'register',
+            path: '/register',
+            element:
+                <RouterSecured>
+                    <Register/>
+                </RouterSecured>
+        },
+        {
+            name: 'registerConfirmation',
+            path: '/confirmation/:confirmation',
+            element:
+                <RouterSecured>
+                    <RegisterConfirmation/>
                 </RouterSecured>
         },
         {
