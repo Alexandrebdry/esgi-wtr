@@ -11,8 +11,11 @@ export default function RegisterConfirmation() {
 
     useEffect(() => {
        const verifyToken = async () => {
-              const response = await verifyTokenService(code) ;
-              if(response) setIsVerified(true) ;
+              try {
+                  const response = await verifyTokenService(code) ;
+                  if(response.status === 204) setIsVerified(true) ;
+              } catch (err) {console.warn(err)}
+
               setLoading(false) ;
        }
        verifyToken() ;
@@ -21,7 +24,10 @@ export default function RegisterConfirmation() {
     return (
         <Box>
             { !loading &&
-            isVerified ? <h1>Compte vérifié</h1> : <h1>Erreur lors de la vérification du compte</h1>}
+            isVerified ?
+                <h1>Compte vérifié</h1> :
+                <h1>Echec de lors de la vérification du compte. S'il est déjà vérifier n'en tenez pas compte</h1>
+            }
         </Box>
     )
 
