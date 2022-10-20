@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {verifyTokenService} from "../../../services/authServices";
+import {confirmAccountService} from "../../../services/authServices";
 import {useParams} from "react-router-dom";
 import {Box} from "@mui/material";
 
@@ -12,7 +12,7 @@ export default function RegisterConfirmation() {
     useEffect(() => {
        const verifyToken = async () => {
               try {
-                  const response = await verifyTokenService(code) ;
+                  const response = await confirmAccountService(code) ;
                   if(response.status === 204) setIsVerified(true) ;
               } catch (err) {console.warn(err)}
 

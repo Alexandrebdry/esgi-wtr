@@ -19,3 +19,14 @@ module.exports.confirmationEmail = (user) => {
         <a href="${process.env.FRONT_URL}/confirmation/${user.confirmationToken}">ce lien</a></p>`
     });
 }
+
+module.exports.askResetPassword = (user) => {
+    transporter.sendMail({
+        from: process.env.EMAIL_ADRESSE,
+        to: user.email,
+        subject: 'Changement de mot de passe',
+        html: `<h1>Bonjour ${user.firstName} ${user.lastName}</h1>
+        <p>Vous venez de faire une demande pour changer votre mot de passe. Pour le chancher, veuillez cliquer sur
+        <a href="${process.env.FRONT_URL}/reset-password/${user.resetPasswordToken}">ce lien</a></p>`
+    });
+}

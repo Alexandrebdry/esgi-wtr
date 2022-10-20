@@ -3,6 +3,7 @@ import {Backdrop, CircularProgress} from "@mui/material";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import useScrollNavigate from "../hooks/useScrollNavigate";
+import {refreshService, verifyTokenService} from "../../services/authServices";
 
 export const UserContext = createContext({}) ;
 
@@ -15,12 +16,7 @@ const UserProvider = ({children}) => {
 
     const refreshToken = async () => {
         try {
-            const response = await fetch('http://localhost:3001/auth/refresh', {
-                    method: 'POST',
-                    headers:{'Content-Type': 'application/json'},
-                    body: {"refreshToken": user.refreshToken}
-                }
-            ) ;
+            const response = await refreshService(user) ;
             const data = await response.json() ;
             setUser({...user, accessToken: data.accessToken, refreshToken: data.refreshToken}) ;
         } catch (err) {console.warn(err)}
@@ -42,16 +38,17 @@ const UserProvider = ({children}) => {
         if (!loader) {
 
             if(!user && !token) {
-               // scrollNavigate("/login") ;
+
+                if ( ! window.location.pathname.includes('/confirm')  )
+                    if( ! window.location.pathname.includes('/register') )
+                        if(! window.location.pathname.includes('/reset-password'))
+                            scrollNavigate("/login") ;
+
             }
 
         } else {
             if(token) {
-                fetch('http://localhost:3001/auth/verify', {
-                    method: 'POST',
-                    headers:{'Content-Type': 'application/json'},
-                    body: {"token": token}
-                }).then((response) => response.json()).then((data) => {
+                verifyTokenService(token).then((response) => response.json()).then((data) => {
                    const user = data ;
                    if(user) setUser(user) ;
 
@@ -60,7 +57,7 @@ const UserProvider = ({children}) => {
             setLoader(false) ;
         }
 
-    },[user,loader]) ;
+    },[user]) ;
 
     const setUserInformation = (information) => {
         setUser(information) ;

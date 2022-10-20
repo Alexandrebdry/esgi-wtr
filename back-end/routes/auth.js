@@ -1,13 +1,16 @@
 const {Router} = require('express') ;
 const {body, validationResult} = require('express-validator');
 const {User} = require('../models') ;
-const jwt = require('jsonwebtoken') ;
+const bcrypt = require("bcryptjs") ;
+const authMiddleware = require('../security/middleware/auth') ;
 
 const {generateCode} = require("../services/codeGenerator");
 const {ValidationError} = require("sequelize");
-const {confirmationEmail} = require("../mailing/nodemailer.config");
+const {confirmationEmail, askResetPassword} = require("../mailing/nodemailer.config");
+const {generateToken} = require("../security/jwt");
 
 const router = Router() ;
+let refreshTokens = [];
 
 router.post('/register', [
     body('email').isEmail(),
@@ -18,7 +21,7 @@ router.post('/register', [
         try{
             const user = await User.findOne({
                     where: {email: req.body.email},
-                    paranoid: false}
+                    paranoid: true}
             ) ;
             if(user)
                 return res.status(400).json({message: "User already exists."}) ;
@@ -32,6 +35,7 @@ router.post('/register', [
                     lastName: newUser.lastName,
                     email: newUser.email,
                     role: newUser.role,
+                    slug: newUser.slug
                 });
             }
 
@@ -54,18 +58,106 @@ router.patch('/confirm', async (req, res) => {
     try{
         const user = await User.findOne({
             where: {confirmationToken: req.body.token},
-            paranoid: false
+            paranoid: true
         }) ;
 
         if(!user)
             return res.status(400).json({message: "Invalid token."}) ;
         user.isVerified = true ;
+        user.confirmationToken = null ;
         await user.save() ;
         return res.sendStatus(204) ;
     } catch (error) {
         res.sendStatus(500);
         console.error(error);
     }
+}) ;
+
+router.get('/verify', authMiddleware  , async (req,res) => {
+    return res.json(req.user) ;
+});
+
+router.post('/login', async (req,res) => {
+    try {
+        const user = await User.findOne({
+            where : {email: req.body.email},
+            paranoid: true
+        });
+
+        if(!user) return res.status(401).json({message: 'Identifiants non valide' }) ;
+        const passwordValid = await bcrypt.compare(req.body.password, user.password) ;
+
+        if(!passwordValid) return res.status(401).json({message: 'Identifiants non valide' }) ;
+        if(!user.isVerified) return res.status(401).json({message: "Le compte n'est pas vérifié" }) ;
+
+        const accessToken = generateToken(user) ;
+        const refreshToken = generateToken(user) ;
+        refreshTokens.push(refreshToken) ;
+
+        return res.json({
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            avatar: user.avatar,
+            role: user.role,
+            slug: user.slug,
+            accessToken,
+            refreshToken
+        });
+
+
+    } catch(err) {
+        res.sendStatus(500);
+        console.error(err);
+    }
+}) ;
+
+router.patch('/reset-password', async (req,res) => {
+    try {
+        const user = await User.findOne({
+            where: {email: req.body.email},
+            paranoid: true
+        }) ;
+        if(!user) return res.sendStatus(401) ;
+
+        user.resetPasswordToken = generateCode();
+        await user.save();
+
+        askResetPassword(user) ;
+        return res.sendStatus(204) ;
+
+
+    } catch(err) {return res.sendStatus(500);}
+}) ;
+
+router.patch('/confirm-reset-password',
+    body('password').isLength({min:8}),
+    async (req,res) => {
+        try {
+            const user = await User.findOne({
+                where: {resetPasswordToken: req.body.code}
+            });
+            if(!user) return res.sendStatus(401) ;
+
+            user.password = req.body.password ; //await bcrypt.hash(req.body.password, await bcrypt.genSalt()) ;
+            user.resetPasswordToken = null ;
+
+            await user.save() ;
+            return  res.sendStatus(204) ;
+
+        } catch(error) {
+            if (error instanceof ValidationError) {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                    return res.status(422).json({ errors: errors.array() });
+                }
+
+            } else {
+                res.sendStatus(500);
+                console.error(error);
+            }
+        }
+
 }) ;
 
 module.exports = router ;

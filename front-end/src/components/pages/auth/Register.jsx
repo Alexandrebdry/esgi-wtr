@@ -33,6 +33,7 @@ export default function Register () {
         };
 
         registerService(user).then(data => data.json()).then((data) => {
+            if (data?.message) throw new Error(data.message);
             setEmail('') ;
             setPassword('') ;
             setPasswordConfirm('') ;
@@ -40,7 +41,7 @@ export default function Register () {
             setLastname('') ;
            openSnackbar("Votre compte a bien été créé, un mail de vérification a été envoyé", "success") ;
         }).catch((err) => {
-            openSnackbar("Une erreur est survenu lors de la tentative de création de compte, veuillez réessayer", "error") ;
+            openSnackbar(err.message, "error") ;
         });
     }
 

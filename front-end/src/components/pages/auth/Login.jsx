@@ -21,17 +21,17 @@ export default function () {
             openSnackbar("Veuillez remplir tous les champs", "error") ;
             return ;
         }
-        const user = {
-            email: email,
-            password: password
-        } ;
-
-        loginService(user).then((data) => {
-            setUserInformation(data) ;
+        try {
+            const user = await loginService(email, password) ;
+            if(user?.message) throw new Error(user.message);
+            setUserInformation(user) ;
             scrollNavigate("/") ;
-        }).catch((err) => {
-            openSnackbar("Une erreur est survenu lors de la tentative de connexion, veuillez réessayer", "error") ;
-        }) ;
+
+        }
+        catch(err) {
+            setUserInformation(null) ;
+            openSnackbar(err.message, "error") ;
+        }
 
     }
 
@@ -53,7 +53,7 @@ export default function () {
                         <TextField fullWidth required id={"email"} label={"Adresse email"} name={"email"} autoComplete={"email"} value={email} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField fullWidth required id={"password"} label={"mot de passe"} name={"password"} autoComplete={"password"} value={password} onChange={handleChange} />
+                        <TextField type={"password"} fullWidth required id={"password"} label={"mot de passe"} name={"password"} autoComplete={"password"} value={password} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
                         <Button sx={{bgcolor: "red"}} type={"submit"} fullWidth variant={"contained"} >se connecter</Button>
