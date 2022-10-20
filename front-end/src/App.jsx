@@ -1,14 +1,17 @@
 import UserProvider from "./components/provider/UserProvider";
 import Router from "./components/rooting/Router";
+import SnackbarProvider from "./components/provider/SnackbarProvider";
 
 
 function App() {
 
     return (
         <UserProvider>
-            <div className="app">
-                <Router/>
-            </div>
+            <SnackbarProvider>
+                <div className="app">
+                    <Router/>
+                </div>
+            </SnackbarProvider>
         </UserProvider>
     );
 

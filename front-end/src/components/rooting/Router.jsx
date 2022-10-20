@@ -3,6 +3,11 @@ import {Route, Routes} from "react-router-dom";
 import {Suspense} from "react";
 import NotFound from "../pages/errors/NotFound";
 import Home from "../pages/Home";
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
+import RegisterConfirmation from "../pages/auth/RegisterConfirmation";
+import ForgetPassword from "../pages/auth/ForgetPassword";
+import ChangePassword from "../pages/auth/ChangePassword";
 
 export const useRoutes = () => {
     const routes = [
@@ -12,6 +17,47 @@ export const useRoutes = () => {
             element:
                 <RouterSecured>
                     <Home/>
+                </RouterSecured>
+        },
+        {
+            name:'login',
+            path: '/login',
+            element:
+            <RouterSecured>
+                <Login/>
+            </RouterSecured>
+        },
+        {
+            name: 'register',
+            path: '/register',
+            element:
+                <RouterSecured>
+                    <Register/>
+                </RouterSecured>
+        },
+        {
+            name: 'forget-password',
+            path: '/forget-password',
+            element:
+                <RouterSecured>
+                    <ForgetPassword/>
+                </RouterSecured>
+        },
+        {
+            name: 'reset-password',
+            path: '/reset-password/:code',
+            element:
+                <RouterSecured>
+                    <ChangePassword/>
+                </RouterSecured>
+
+        },
+        {
+            name: 'registerConfirmation',
+            path: '/confirmation/:confirmation',
+            element:
+                <RouterSecured>
+                    <RegisterConfirmation/>
                 </RouterSecured>
         },
         {

@@ -1,12 +1,18 @@
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import {useCallback} from "react";
 
-export default function ({route}) {
+const useScrollNavigate =  () => {
     const navigate = useNavigate() ;
 
-    useEffect(() => {
-        window.scroll(0, 0) ;
-        navigate(route) ;
-    },[]) ;
+    const scrollNavigate = useCallback( (path) => {
+        navigate(path);
+        window.scrollTo(0,0 );
+
+    },[navigate]);
+
+    return (
+        scrollNavigate
+    )
 
 }
+export default useScrollNavigate ;
