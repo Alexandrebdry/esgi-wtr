@@ -74,7 +74,19 @@ router.patch('/confirm', async (req, res) => {
 }) ;
 
 router.get('/verify', authMiddleware  , async (req,res) => {
-    return res.json(req.user) ;
+    const user = await User.findOne({
+        where: {email: req.user.email},
+        paranoid: true
+    });
+    if(!user) return res.sendStatus(401);
+    else return res.json({
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+        role: user.role,
+        slug: user.slug,
+    });
 });
 
 router.post('/login', async (req,res) => {

@@ -25,7 +25,7 @@ import {
     Person,
     SettingsApplications
 } from "@mui/icons-material";
-import {color_black, color_red, color_white} from "../../services/colors";
+import {color_black, color_red, color_red_hover, color_white, color_white_hover} from "../../services/colors";
 
 export default function () {
     const { user, setUserInformation} = useContext(UserContext) ;
@@ -54,6 +54,20 @@ export default function () {
     const menuID = 'header-menu-button' ;
     const menuMobileID = 'header-mobile-menu-button' ;
 
+    const adminMenu = (
+        <MenuItem>
+            <ListItemIcon> <AdminPanelSettings /> </ListItemIcon>
+            <Typography variant={"inherit"}>Admin</Typography>
+        </MenuItem>
+    ) ;
+
+    const sellerMenu = (
+        <MenuItem>
+            <ListItemIcon> <SettingsApplications /> </ListItemIcon>
+            <Typography variant={"inherit"}>conseiller</Typography>
+        </MenuItem>
+    );
+
     const menuUserConnected = (
         <Menu anchorOrigin={{vertical:"top", horizontal:'left'}}  transformOrigin={{vertical:"top", horizontal:'left'}}
               anchorReference="anchorPosition" anchorPosition={{ top: 50, left: 2000 }}
@@ -76,6 +90,17 @@ export default function () {
                     <ListItemIcon> <Logout /> </ListItemIcon>
                     <Typography variant={"inherit"}>se déconnecter</Typography>
                 </MenuItem>
+                <Box sx={{width:'100%'}} display={{xs:'block', md:'none'}}>
+                    {user && user?.role === 'admin' &&
+                        <>
+                            {sellerMenu}
+                            {adminMenu}
+                        </>
+                    }
+                    {user && user?.role === 'seller' &&
+                        sellerMenu
+                    }
+                </Box>
             </Stack>
         </Menu>
     );
@@ -99,6 +124,18 @@ export default function () {
 
     );
 
+    const adminButton = (
+        <Button sx={{ color: color_white, '&:hover': {bgcolor: color_red_hover }}} onClick={() => {redirectMenu('/admin')}} startIcon={<AdminPanelSettings/>}>
+            Admin
+        </Button>
+    );
+    const sellerButton = (
+        <Button  sx={{  color: color_white, '&:hover': {bgcolor: color_red_hover }}} onClick={() => {redirectMenu('/sellers-pannel')}} startIcon={<SettingsApplications/>}>
+            conseiller
+        </Button>
+    );
+
+
     return (
         <header>
              <Box flexGrow={1} >
@@ -109,17 +146,15 @@ export default function () {
                              <Typography style={{color:color_white}}>Un site de moto</Typography>
                          </ButtonBase>
                          <Box flexGrow={1}/>
-
-                         <Box display={{xs:'none', md:'flex'}}>
+                         <Box  display={{xs:'none', md:'flex'}}>
                              {user && user?.role === 'admin' &&
-                                 <Button onClick={() => {redirectMenu('/admin')}} startIcon={<AdminPanelSettings/>}>
-                                     Admin
-                                 </Button>
+                                 <>
+                                     {adminButton}
+                                     {sellerButton}
+                                 </>
                              }
-                             {user && user?.role === 'seller' || user?.role === 'admin'  &&
-                                 <Button onClick={() => {redirectMenu('/sellers-pannel')}} startIcon={<SettingsApplications/>}>
-                                     mon espace conseiller
-                                 </Button>
+                             {user && user?.role === 'seller' &&
+                                sellerButton
                              }
                              <IconButton size="large" edge="end" aria-label="account of current"
                                  aria-controls={menuID} aria-haspopup="true" aria-expanded={isMenuOpen ? 'true' : undefined}
