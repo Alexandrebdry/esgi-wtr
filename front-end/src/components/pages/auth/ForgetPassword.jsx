@@ -4,6 +4,7 @@ import {askResetPassword} from "../../../services/authServices";
 import {SnackbarContext} from "../../provider/SnackbarProvider";
 import {Avatar, Box, Button, Grid, Link, TextField, Typography} from "@mui/material";
 import {Login} from "@mui/icons-material";
+import {color_red, color_red_hover} from "../../../services/colors";
 
 export default function () {
 
@@ -28,8 +29,8 @@ export default function () {
     }
 
     return (
-        <Box width={'100'} marginTop={8} display={"flex"} justifyContent={"center"} alignItems={"center"} flexDirection={"column"} >
-            <Avatar sx={{width:50, height:50, bgcolor: 'red'}} >
+        <Box width={'100'} marginTop={28} display={"flex"} justifyContent={"center"} alignItems={"center"} flexDirection={"column"} >
+            <Avatar sx={{width:50, height:50, bgcolor: color_red}} >
                 <Login fontSize={"large"}/>
             </Avatar>
             <Typography component={"h1"} variant={"h4"}>Mot de passe oublié</Typography>
@@ -40,7 +41,7 @@ export default function () {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Button sx={{bgcolor: "red"}} type={"submit"} fullWidth variant={"contained"} >envoyer une demande</Button>
+                        <Button sx={{bgcolor: color_red, '&:hover': {bgcolor: color_red_hover}}} type={"submit"} fullWidth variant={"contained"} >envoyer une demande</Button>
                     </Grid>
                 </Grid>
 
