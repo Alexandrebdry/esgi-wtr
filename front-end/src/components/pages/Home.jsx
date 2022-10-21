@@ -12,6 +12,7 @@ export default function ({}) {
 
     useEffect(() => {
        if (user) setLoader(false) ;
+       console.log(user) ;
     },[user]) ;
 
     return (
