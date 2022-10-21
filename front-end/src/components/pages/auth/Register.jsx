@@ -4,6 +4,7 @@ import useScrollNavigate from "../../hooks/useScrollNavigate";
 import {registerService} from "../../../services/authServices";
 import {Avatar, Box, Button, Grid, Link, TextField, Typography} from "@mui/material";
 import {Person} from "@mui/icons-material";
+import {color_black, color_red, color_red_hover} from "../../../services/colors";
 
 export default function Register () {
 
@@ -46,12 +47,12 @@ export default function Register () {
     }
 
     return (
-        <Box  mt={8} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
-            <Avatar sx={{width:50, height:50, bgcolor: 'red'}} >
+        <Box  mt={28} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+            <Avatar sx={{width:50, height:50, bgcolor: color_red }} >
                 <Person fontSize={"large"}/>
             </Avatar>
             <Typography component={"h1"} variant={"h4"}>S'inscrire</Typography>
-            <Box width={'50%'} component={"form"} noValidate onSubmit={handleSubmit} marginTop={3}>
+            <Box width={'50%'}  component={"form"} noValidate onSubmit={handleSubmit} marginTop={3}>
                 <Grid container  spacing={1} >
                     <Grid item xs={12}>
                         <TextField required fullWidth autoFocus  autoComplete={"given-name"} name={"firstname"} onChange={(evt)=>{setFirstname(evt.target.value)}} id={"firstname"} value={firstname} label={"Prénom"}  />
@@ -69,7 +70,7 @@ export default function Register () {
                         <TextField required fullWidth autoComplete={"new-password"} name={"passwordConfirm"} onChange={(evt)=>{setPasswordConfirm(evt.target.value)}} id={"passwordConfirm"} value={passwordConfirm} label={"Confirmer le mot de passe"} type={"password"}  />
                     </Grid>
                     <Grid item xs={12}>
-                        <Button sx={{bgcolor: "red"}} type={"submit"} fullWidth variant={"contained"} >s'inscrire</Button>
+                        <Button sx={{bgcolor: color_red, '&:hover': {bgcolor: color_red_hover}}} type={"submit"} fullWidth variant={"contained"} >s'inscrire</Button>
                     </Grid>
                 </Grid>
                 <Box mt={1} display={"flex"} justifyContent={"flex-end"}>

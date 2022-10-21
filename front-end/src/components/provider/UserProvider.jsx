@@ -57,7 +57,7 @@ const UserProvider = ({children}) => {
             setLoader(false) ;
         }
 
-    },[user]) ;
+    },[user, loader]) ;
 
     const setUserInformation = (information) => {
         setUser(information) ;
