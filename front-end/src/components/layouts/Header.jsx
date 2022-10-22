@@ -1,31 +1,38 @@
 import useScrollNavigate from "../hooks/useScrollNavigate";
 import {useContext, useState} from "react";
 import {UserContext} from "../provider/UserProvider";
-import logo from "../../../public/images/logo.jpg" ;
+import logo from "../../../public/images/logo.jpg";
 import {
     AppBar,
     Box,
-    Button,
     ButtonBase,
+    Divider,
+    Drawer,
     IconButton,
+    List,
+    ListItemButton,
     ListItemIcon,
-    Menu,
-    MenuItem,
-    Stack,
+    ListItemText,
+    styled,
     Toolbar,
-    Typography
+    Typography,
+    useTheme
 } from "@mui/material";
 import {
     AccountCircle,
     AdminPanelSettings,
-    LockOpen,
-    Login,
+    ChevronRight,
+    GroupAdd,
+    Groups3,
     Logout,
-    MoreVert,
+    Menu as MenuIcon,
+    Message,
     Person,
     SettingsApplications
 } from "@mui/icons-material";
-import {color_black, color_red, color_red_hover, color_white, color_white_hover} from "../../services/colors";
+import {color_red, color_white} from "../../services/colors";
+import CustomList from "./list/CustomList";
+import CustomListItem from "./list/CustomListItem";
 
 export default function () {
     const { user, setUserInformation} = useContext(UserContext) ;
@@ -36,6 +43,7 @@ export default function () {
         if(!evt) setAnchor(null);
         else setAnchor(evt.currentTarget) ;
     }
+
     const redirectMenu = (route) => {
         handleMenu();
         if(route === '/')
@@ -50,7 +58,7 @@ export default function () {
         scrollNavigate('/login') ;
         handleMenu();
     }
-
+    /*
     const menuID = 'header-menu-button' ;
     const menuMobileID = 'header-mobile-menu-button' ;
 
@@ -133,8 +141,42 @@ export default function () {
         <Button  sx={{  color: color_white, '&:hover': {bgcolor: color_red_hover }}} onClick={() => {redirectMenu('/sellers-pannel')}} startIcon={<SettingsApplications/>}>
             conseiller
         </Button>
-    );
+    ); */
 
+    const drawerWidth = 240;
+
+    const DrawerHeader = styled('div')(({ theme }) => ({
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-start',
+    }));
+    const [open, setOpen] = useState(false);
+    const theme = useTheme();
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+    const divider = (
+        <Divider sx={{bgcolor:color_white}}/>
+    )
+
+    const sellerList = (
+        <ListItemButton onClick={() => {scrollNavigate('/sellers')}}>
+            <ListItemIcon sx={{color:color_white}}> <SettingsApplications/> </ListItemIcon>
+            <ListItemText primary={"Conseiller"}/>
+        </ListItemButton>
+    );
+    const adminList = (
+        <ListItemButton onClick={()=>{scrollNavigate('/admin')}}>
+            <ListItemIcon sx={{color:color_white}}> <AdminPanelSettings/> </ListItemIcon>
+            <ListItemText primary={"Admin"}/>
+        </ListItemButton>
+    );
 
     return (
         <header>
@@ -146,33 +188,65 @@ export default function () {
                              <Typography style={{color:color_white}}>Un site de moto</Typography>
                          </ButtonBase>
                          <Box flexGrow={1}/>
-                         <Box  display={{xs:'none', md:'flex'}}>
-                             {user && user?.role === 'admin' &&
-                                 <>
-                                     {adminButton}
-                                     {sellerButton}
-                                 </>
-                             }
-                             {user && user?.role === 'seller' &&
-                                sellerButton
-                             }
-                             <IconButton size="large" edge="end" aria-label="account of current"
-                                 aria-controls={menuID} aria-haspopup="true" aria-expanded={isMenuOpen ? 'true' : undefined}
-                                 onClick={(evt) => {handleMenu(evt)}} sx={{color:color_white,}}>
-                                 <AccountCircle  fontSize="2rem"/>
-                             </IconButton>
-                         </Box>
-                         <Box sx={{display: {xs: 'flex', md: 'none'}}}>
-                             <IconButton size="large" aria-label="show more"
-                                 aria-controls={menuMobileID} aria-haspopup="true" aria-expanded={isMenuOpen ? 'true' : undefined}
-                                 onClick={(evt) => {handleMenu(evt)}} sx={{color:color_white, fontSize: "2.5rem"}}>
-                                 <MoreVert/>
-                             </IconButton>
-                         </Box>
-                         {user? menuUserConnected : menuUserDisconnected}
+                         <IconButton  sx={{ ...(open && { display: 'none' }) }} style={{color:color_white}} onClick={handleDrawerOpen}>
+                             <MenuIcon/>
+                         </IconButton>
                      </Toolbar>
                  </AppBar>
              </Box>
+            <Drawer  open={open} anchor={'right'} variant={"persistent"}  sx={{width: drawerWidth, flexShrink:0 ,'& .MuiDrawer-paper': {width: drawerWidth,bgcolor: color_red},}} >
+                <DrawerHeader>
+                    <IconButton sx={{color:color_white}} onClick={handleDrawerClose}>
+                       <ChevronRight />
+                    </IconButton>
+                </DrawerHeader>
+                {divider}
+                <Box height={'100vh'} display={"flex"} flexDirection={"column"}>
+                    <CustomList children={
+                        <>
+                            {user && <CustomListItem text={  user?.firstName + " " + user?.lastName } />}
+                            <CustomListItem icon={<AccountCircle/>} text={"Mon compte"} clickEvent={() => {scrollNavigate('/account')} } />
+                            <CustomListItem icon={<GroupAdd/>} text={"Créer un groupe"} clickEvent={() => {scrollNavigate('/create-groupe')} }/>
+                            <CustomListItem icon={<Groups3/>} text={"Gérer mes groupes"}  clickEvent={() => {scrollNavigate('/my-groups')} }/>
+                        </>
+                    } />
+                    {divider}
+                    <CustomList children={
+                        <>
+                            <CustomListItem icon={<Person/>} text={"Conseiller en ligne"}  />
+                            {/*liste des conseillers en ligne*/}
+                        </>
+                    } />
+                    {divider}
+                    <CustomList children={
+                        <>
+                            <CustomListItem text={"Mes conversations"} icon={<Message/>}/>
+                        </>
+                    } />
+                    <CustomList sx={{position:'fixed', bottom:'0', width:'100%'}} children={
+                        <>
+                            <CustomListItem icon={<Logout/>} text={"Se déconnecter"} clickEvent={() => {logoutUser()}} />
+                            { user && user?.role !== 'user' && divider}
+                            {
+                                user && user?.role === 'seller' &&
+                                sellerList
+                            }
+                            {user && user?.role === 'admin' &&
+                                <>
+                                    {sellerList}
+                                    {adminList}
+                                </>
+
+                            }
+
+                        </>
+                    } />
+                    <List >
+
+
+                    </List>
+                </Box>
+            </Drawer>
         </header>
     );
 
