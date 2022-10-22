@@ -23,7 +23,7 @@ export default function ({}) {
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover',
                 }}>
                     <Box margin={'auto'} width={'100%'} height={'100%'} color={color_white} display={"flex"}  justifyContent={"flex-end"}>
-                        <Stack marginRight={{xs: 0 , md:25}} height={'100%'} color={color_white} display={"flex"} alignItems={{xs: 'center', sm:'flex-start'}} justifyContent={"center"}>
+                        <Stack marginRight={{xs: 0 , md:40}} height={'100%'} color={color_white} display={"flex"} alignItems={{xs: 'center', sm:'flex-start'}} justifyContent={"center"}>
                             <Typography textAlign={"center"} fontWeight={"bolder"} variant={"h1"}> Site de moto </Typography>
                             <Typography alignSelf={{xs:'center', sm:'flex-end'}}>un site de moto pas comme les autres</Typography>
                         </Stack>
