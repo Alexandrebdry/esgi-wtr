@@ -1,7 +1,6 @@
 const {Router} = require('express');
 const {Group, Ask, User} = require("../models");
 const {body} = require("express-validator");
-const UserGroup = require("../models/entity/UserGroup");
 const router = Router();
 
 router.get('/groups', async (req, res) => {

@@ -1,5 +1,5 @@
 import useScrollNavigate from "../hooks/useScrollNavigate";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../provider/UserProvider";
 import logo from "../../../public/images/logo.jpg";
 import {
@@ -33,19 +33,13 @@ import {
 import {color_red, color_white} from "../../services/colors";
 import CustomList from "./list/CustomList";
 import CustomListItem from "./list/CustomListItem";
+import {createGroup, getConversations} from "../../services/groupServices";
 
 export default function () {
     const { user, setUserInformation} = useContext(UserContext) ;
     const scrollNavigate = useScrollNavigate() ;
-    const [anchor, setAnchor] = useState(null);
-    const isMenuOpen = Boolean(anchor) ;
-    const handleMenu = (evt = false) => {
-        if(!evt) setAnchor(null);
-        else setAnchor(evt.currentTarget) ;
-    }
 
     const redirectMenu = (route) => {
-        handleMenu();
         if(route === '/')
             if (!user) {
                 return
@@ -56,92 +50,7 @@ export default function () {
     const logoutUser = () => {
         setUserInformation(null) ;
         scrollNavigate('/login') ;
-        handleMenu();
     }
-    /*
-    const menuID = 'header-menu-button' ;
-    const menuMobileID = 'header-mobile-menu-button' ;
-
-    const adminMenu = (
-        <MenuItem>
-            <ListItemIcon> <AdminPanelSettings /> </ListItemIcon>
-            <Typography variant={"inherit"}>Admin</Typography>
-        </MenuItem>
-    ) ;
-
-    const sellerMenu = (
-        <MenuItem>
-            <ListItemIcon> <SettingsApplications /> </ListItemIcon>
-            <Typography variant={"inherit"}>conseiller</Typography>
-        </MenuItem>
-    );
-
-    const menuUserConnected = (
-        <Menu anchorOrigin={{vertical:"top", horizontal:'left'}}  transformOrigin={{vertical:"top", horizontal:'left'}}
-              anchorReference="anchorPosition" anchorPosition={{ top: 50, left: 2000 }}
-              PaperProps={{   elevation: 0, sx: {overflow: 'visible', filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))', mt: 1.5,
-                      '& .MuiAvatar-root': {width: 32, height: 32, ml: -0.5, mr: 1,},
-                      '&:before': {content: '""', display: 'block', position: 'absolute', top: 0, right: 14,
-                          width: 10, height: 10, bgcolor: 'background.paper', transform: 'translateY(-50%) rotate(45deg)', zIndex: 0,},
-                  },
-              }}
-             id={menuID}  open={isMenuOpen} onClose={() => {handleMenu();}}>
-            <Stack color={color_black} display={"flex"} alignItems={"flex-start"} justifyContent={"flex-start"}>
-                <Typography variant={'inherit'} margin={'auto'} maxWidth={'80%'} alignSelf={'center'} component={'p'} fontWeight={'bolder'} noWrap>
-                    {user?.firstName} {user?.lastName}
-                </Typography>
-                <MenuItem color={color_black} sx={{width:'100%'}} onClick={() => {redirectMenu('/profile')}}>
-                    <ListItemIcon> <Person /> </ListItemIcon>
-                    <Typography variant={"inherit"}>Mon compte</Typography>
-                </MenuItem>
-                <MenuItem sx={{width:'100%'}} onClick={() => {logoutUser()}}>
-                    <ListItemIcon> <Logout /> </ListItemIcon>
-                    <Typography variant={"inherit"}>se déconnecter</Typography>
-                </MenuItem>
-                <Box sx={{width:'100%'}} display={{xs:'block', md:'none'}}>
-                    {user && user?.role === 'admin' &&
-                        <>
-                            {sellerMenu}
-                            {adminMenu}
-                        </>
-                    }
-                    {user && user?.role === 'seller' &&
-                        sellerMenu
-                    }
-                </Box>
-            </Stack>
-        </Menu>
-    );
-
-    const menuUserDisconnected = (
-
-        <Menu anchorOrigin={{vertical:"top", horizontal:'left'}}  transformOrigin={{vertical:"top", horizontal:'left'}}
-              anchorReference="anchorPosition" anchorPosition={{ top: 50, left: 2000 }}
-              PaperProps={{elevation: 0, sx: {overflow: 'visible', filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))', mt: 1.5,
-                      '& .MuiAvatar-root': {width: 32, height: 32, ml: -0.5, mr: 1,},
-                      '&:before': {content: '""', display: 'block', position: 'absolute', top: 0, right: 14, width: 10,
-                          height: 10, bgcolor: 'background.paper', transform: 'translateY(-50%) rotate(45deg)', zIndex: 0,},
-                  },
-              }}
-              id={menuID} open={isMenuOpen} onClose={() => {handleMenu();}}>
-            <Stack color={color_black} display={"flex"} alignItems={"flex-start"} justifyContent={"flex-start"}>
-                <MenuItem sx={{width:'100%'}} onClick={() => redirectMenu('/login')}> <Login />  <Typography variant={"inherit"}> Se connecter </Typography> </MenuItem>
-                <MenuItem sx={{width:'100%'}} onClick={() => redirectMenu('/register')}> <LockOpen />   <Typography variant={"inherit"}>S'inscrire </Typography> </MenuItem>
-            </Stack>
-        </Menu>
-
-    );
-
-    const adminButton = (
-        <Button sx={{ color: color_white, '&:hover': {bgcolor: color_red_hover }}} onClick={() => {redirectMenu('/admin')}} startIcon={<AdminPanelSettings/>}>
-            Admin
-        </Button>
-    );
-    const sellerButton = (
-        <Button  sx={{  color: color_white, '&:hover': {bgcolor: color_red_hover }}} onClick={() => {redirectMenu('/sellers-pannel')}} startIcon={<SettingsApplications/>}>
-            conseiller
-        </Button>
-    ); */
 
     const drawerWidth = 240;
 
@@ -178,6 +87,35 @@ export default function () {
         </ListItemButton>
     );
 
+    const newGroup = async () => {
+        const group = await createGroup({
+            maxUsers:4,
+            ownerID: user.id,
+            isPrivate: true,
+            name: "Groupe de " + user.firstName
+        });
+        setIsNewConversation(true) ;
+
+    }
+
+    const [conversations, setConversation] = useState(null) ;
+    const [isNewConversation, setIsNewConversation] = useState(false) ;
+    const getConversation = async () => {
+        try {
+            if(user) {
+                const res = await getConversations(user.id) ;
+                const data = await res.json() ;
+                setConversation(data) ;
+                setIsNewConversation(false) ;
+            }
+
+        } catch (err) {console.error(err);}
+    }
+
+    useEffect(() => {
+        getConversation() ;
+    },[user, isNewConversation]) ;
+
     return (
         <header>
              <Box flexGrow={1} >
@@ -206,7 +144,7 @@ export default function () {
                         <>
                             {user && <CustomListItem text={  user?.firstName + " " + user?.lastName } />}
                             <CustomListItem icon={<AccountCircle/>} text={"Mon compte"} clickEvent={() => {scrollNavigate('/account')} } />
-                            <CustomListItem icon={<GroupAdd/>} text={"Créer un groupe"} clickEvent={() => {scrollNavigate('/create-groupe')} }/>
+                            <CustomListItem icon={<GroupAdd/>} text={"Créer un groupe"} clickEvent={() => {newGroup()} }/>
                             <CustomListItem icon={<Groups3/>} text={"Gérer mes groupes"}  clickEvent={() => {scrollNavigate('/my-groups')} }/>
                         </>
                     } />
@@ -221,9 +159,15 @@ export default function () {
                     <CustomList children={
                         <>
                             <CustomListItem text={"Mes conversations"} icon={<Message/>}/>
+                            { conversations && conversations.map((convo, key) => {
+                                return (
+                                    <Typography key={key}>{convo.name}</Typography>
+                                );
+                            }) }
                         </>
                     } />
-                    <CustomList sx={{position:'fixed', bottom:'0', width:'100%'}} children={
+                    <Box flexGrow={1} />
+                    <CustomList children={
                         <>
                             <CustomListItem icon={<Logout/>} text={"Se déconnecter"} clickEvent={() => {logoutUser()}} />
                             { user && user?.role !== 'user' && divider}

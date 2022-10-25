@@ -1,14 +1,17 @@
 import {basePath} from "./basePath";
 const path = basePath + 'groups' ;
+const pathGrp = basePath + 'conversations' ;
 
 export const getGroups = async () => {
-    return await fetch(path)
-        .then(res => res.json());
+    return await fetch(path,{
+        headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
+    }).then(res => res.json());
 };
 
 export const getGroup = async (id) => {
-    return await fetch(path +'/' +id)
-        .then(res => res.json());
+    return await fetch(path +'/' +id, {
+        headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
+    }).then(res => res.json());
 };
 
 /**
@@ -19,13 +22,53 @@ export const getGroup = async (id) => {
  * @returns {Promise<Response>}
  */
 export const createGroup = async (group) => {
-    return await fetch(path, {
+    const data = await fetch(path, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            authorization: `Bearer ${localStorage.getItem('token')}`
+            authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`
         },
         body: JSON.stringify(group)
     });
+    try {
+        const newGroup = await data.json() ;
+        await addToGroup(newGroup.ownerID, newGroup) ;
+    } catch(err){ return err }
+
 };
 
+export const addToGroup = async (user,group) => {
+    return await fetch(pathGrp,{
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`
+        },
+        body: JSON.stringify({
+            userID: user,
+            groupID: group.id,
+            name: group.name
+        })
+    })
+};
+
+export const createConversation = async (user,answer) => {
+    return await fetch(pathGrp,{
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`
+        },
+        body: JSON.stringify({
+            userID: user,
+            answerID: answer.id,
+            name: answer.name
+        })
+    })
+};
+
+export const getConversations = async (user) => {
+  return await fetch(pathGrp + '?userID=' + user, {
+      headers:{authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`}
+  }) ;
+};

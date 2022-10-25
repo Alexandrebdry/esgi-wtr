@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api', authMiddleware ,require('./routes/groups'));
+app.use('/api', authMiddleware ,require('./routes/conversations'));
 
 app.listen(process.env.PORT,() => {
     console.log("Server is listening on port : " + process.env.PORT) ;

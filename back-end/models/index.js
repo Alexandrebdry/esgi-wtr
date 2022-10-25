@@ -4,6 +4,7 @@ exports.Message = require('./entity/Message');
 exports.Group = require('./entity/Group');
 exports.Ask = require('./entity/Ask');
 exports.Agenda = require('./entity/Agenda');
+exports.UserGroup = require('./entity/UserGroup') ;
 
 
 // Messages
@@ -21,6 +22,7 @@ exports.User.hasMany(exports.Group, {as: 'groups_owner', foreignKey: 'ownerID'})
 // Group members
 exports.Group.belongsToMany(exports.User, {through: 'userGroups',as: 'members' ,foreignKey: 'groupID'});
 exports.User.belongsToMany(exports.Group, {through: 'userGroups',as: 'members' ,foreignKey: 'userID'});
+exports.User.belongsToMany(exports.User,{through: 'userGroups', as:'answers', foreignKey: 'answerID'});
 
 // Ask
 exports.Ask.belongsTo(exports.User, {as: 'user_id', foreignKey: 'userID'});
