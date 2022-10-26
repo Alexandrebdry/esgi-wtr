@@ -3,6 +3,7 @@ import {UserContext} from "../provider/UserProvider";
 import useScrollNavigate from "../hooks/useScrollNavigate";
 import {Box, Stack, Typography} from "@mui/material";
 import {color_white} from "../../services/colors";
+import {createGroup} from "../../services/groupServices";
 
 export default function ({}) {
 

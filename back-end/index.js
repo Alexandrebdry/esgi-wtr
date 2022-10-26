@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
+const authMiddleware = require('./security/middleware/auth');
 
 const app = express();
 const whitelist = ['http://localhost:3000'] ;
@@ -22,6 +23,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api', authMiddleware ,require('./routes/groups'));
+app.use('/api', authMiddleware ,require('./routes/conversations'));
 
 app.listen(process.env.PORT,() => {
     console.log("Server is listening on port : " + process.env.PORT) ;
