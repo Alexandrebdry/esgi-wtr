@@ -20,7 +20,7 @@ UserGroup.init({
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "groupe"
-    }
+    },
 },
 {
     sequelize: connection,

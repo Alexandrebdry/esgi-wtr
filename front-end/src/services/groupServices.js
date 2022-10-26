@@ -47,7 +47,9 @@ export const addToGroup = async (user,group) => {
         body: JSON.stringify({
             userID: user,
             groupID: group.id,
-            name: group.name
+            name: group.name,
+            slug: group.slug,
+            avatar: group?.avatar ?? null
         })
     })
 };

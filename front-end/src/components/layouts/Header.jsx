@@ -106,6 +106,7 @@ export default function () {
                 const res = await getConversations(user.id) ;
                 const data = await res.json() ;
                 setConversation(data) ;
+                console.log(data) ;
                 setIsNewConversation(false) ;
             }
 
@@ -161,7 +162,7 @@ export default function () {
                             <CustomListItem text={"Mes conversations"} icon={<Message/>}/>
                             { conversations && conversations.map((convo, key) => {
                                 return (
-                                    <Typography key={key}>{convo.name}</Typography>
+                                    <CustomListItem key={key} text={convo.name} icon={convo?.avatar} clickEvent={()=>{scrollNavigate( `/conversation/${convo.id}`)}} />
                                 );
                             }) }
                         </>
