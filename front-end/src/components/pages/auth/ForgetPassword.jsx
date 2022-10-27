@@ -2,9 +2,10 @@ import useScrollNavigate from "../../hooks/useScrollNavigate";
 import {useContext, useState} from "react";
 import {askResetPassword} from "../../../services/authServices";
 import {SnackbarContext} from "../../provider/SnackbarProvider";
-import {Avatar, Box, Button, Grid, Link, TextField, Typography} from "@mui/material";
+import {Avatar, Box, Grid, Link, TextField, Typography} from "@mui/material";
 import {Login} from "@mui/icons-material";
-import {color_red, color_red_hover} from "../../../services/colors";
+import {color_red} from "../../../services/colors";
+import FormButton from "../../layouts/button/FormButton";
 
 export default function () {
 
@@ -41,7 +42,7 @@ export default function () {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Button sx={{bgcolor: color_red, '&:hover': {bgcolor: color_red_hover}}} type={"submit"} fullWidth variant={"contained"} >envoyer une demande</Button>
+                        <FormButton name={"envoyer une demande"}/>
                     </Grid>
                 </Grid>
 

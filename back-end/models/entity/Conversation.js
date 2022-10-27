@@ -1,9 +1,9 @@
 const {connection} = require("../index");
 const {DataTypes, Model} = require("sequelize");
 
-class UserGroup extends Model {}
+class Conversation extends Model {}
 
-UserGroup.init({
+Conversation.init({
     userID: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -28,4 +28,4 @@ UserGroup.init({
     paranoid: true,
 });
 
-module.exports = UserGroup;
+module.exports = Conversation;

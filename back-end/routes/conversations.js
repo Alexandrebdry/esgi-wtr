@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {UserGroup} = require("../models");
+const {Conversation} = require("../models");
 const {body} = require("express-validator");
 
 const router = Router();
@@ -9,14 +9,14 @@ router.post('/conversations',
     body('userID').isInt(),
     async (req,res) => {
         try {
-            const conversation = await UserGroup.create(req.body);
+            const conversation = await Conversation.create(req.body);
             res.status(201).json(conversation) ;
         } catch(err) {res.sendStatus(500);console.error(err);}
 });
 
 router.get('/conversations', async (req,res) => {
    try{
-       const conversations = await UserGroup.findAll({
+       const conversations = await Conversation.findAll({
            where: {...req.query},
            paranoid: true
        });

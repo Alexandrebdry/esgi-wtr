@@ -1,6 +1,5 @@
 const {Model, DataTypes} = require("sequelize");
 const {connection} = require("../index");
-const SequelizeSlugify = require("sequelize-slugify");
 
 class Group extends Model {}
 
@@ -9,11 +8,7 @@ Group.init({
         type: DataTypes.STRING,
         allowNull: true,
     },
-    slug: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: true,
-    },
+
     avatar: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -36,8 +31,6 @@ Group.init({
     paranoid: true,
 });
 
-SequelizeSlugify.slugifyModel(Group, {
-    source: ['name', 'creatorID']
-});
+
 
 module.exports = Group;

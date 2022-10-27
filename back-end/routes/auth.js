@@ -35,7 +35,6 @@ router.post('/register', [
                     lastName: newUser.lastName,
                     email: newUser.email,
                     role: newUser.role,
-                    slug: newUser.slug
                 });
             }
 
@@ -86,7 +85,6 @@ router.get('/verify', authMiddleware  , async (req,res) => {
         lastName: user.lastName,
         avatar: user.avatar,
         role: user.role,
-        slug: user.slug,
     });
 });
 
@@ -114,7 +112,6 @@ router.post('/login', async (req,res) => {
             lastName: user.lastName,
             avatar: user.avatar,
             role: user.role,
-            slug: user.slug,
             accessToken,
             refreshToken
         });
