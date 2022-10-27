@@ -36,6 +36,7 @@ import CustomListItem from "./list/CustomListItem";
 import {createGroup, getConversations} from "../../services/groupServices";
 import ChatIcon from "./chat/ChatIcon";
 import {SnackbarContext} from "../provider/SnackbarProvider";
+import {GroupContext} from "../provider/GroupProvider";
 
 const drawerWidth = 240;
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -53,8 +54,7 @@ export default function () {
     const scrollNavigate = useScrollNavigate() ;
     const {openSnackbar} = useContext(SnackbarContext) ;
     const [open, setOpen] = useState(false);
-    const [conversations, setConversation] = useState(null) ;
-    const [isNewConversation, setIsNewConversation] = useState(false) ;
+    const {conversations, setConversations, isGroupChanged, setIsGroupChanged} = useContext(GroupContext) ;
     const theme = useTheme();
 
     const redirectMenu = (route) => {
@@ -67,7 +67,7 @@ export default function () {
 
     const logoutUser = () => {
         setUserInformation(null) ;
-        setConversation(null) ;
+        setConversations(null) ;
         scrollNavigate('/login') ;
         openSnackbar('Vous avez été déconnecté','info');
     };
@@ -86,7 +86,7 @@ export default function () {
             isPrivate: true,
             name: "Groupe de " + user.firstName
         });
-        setIsNewConversation(true) ;
+        setIsGroupChanged(true) ;
         openSnackbar("Vous venez de créer un nouveau groupe") ;
     }
     const getConversation = async () => {
@@ -95,15 +95,15 @@ export default function () {
                 const res = await getConversations(user.id) ;
                 const data = await res.json() ;
                 console.log(data) ;
-                setConversation(data) ;
-                setIsNewConversation(false) ;
+                setConversations(data) ;
+                setIsGroupChanged(false) ;
             }
 
         } catch (err) {console.error(err);}
     }
     useEffect(() => {
         getConversation() ;
-    },[user, isNewConversation]) ;
+    },[user, isGroupChanged]) ;
 
     const divider = (
         <Divider sx={{bgcolor:color_white}}/>
@@ -185,15 +185,9 @@ export default function () {
                                     {sellerList}
                                     {adminList}
                                 </>
-
                             }
-
                         </>
                     } />
-                    <List >
-
-
-                    </List>
                 </Box>
             </Drawer>
         </header>
