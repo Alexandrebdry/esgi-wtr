@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {Group, Ask, User} = require("../models");
+const {Group, Ask, User, Conversation, Message} = require("../models");
 const {body} = require("express-validator");
 const router = Router();
 
@@ -9,7 +9,13 @@ router.get('/groups', async (req, res) => {
         const groups = await Group.findAll({
             where: {...req.query},
             include: [
-                {model: User , as: 'members', attributes: ['id', 'firstName', 'lastName', 'avatar', 'slug']},
+                {model: User, through: 'conversations', as:'members', attributes: [
+                        'id', 'email','firstName','lastName','avatar','role'
+                    ]},
+                {model: User,  as: 'owner_id', attributes: [
+                    'id', 'email','firstName','lastName','avatar','role'
+                ]},
+                {model: Ask, as: 'requests'}
             ],
             paranoid: true
         });
@@ -65,6 +71,32 @@ router.delete('/groups/:id', async (req, res) => {
             paranoid: true
         });
         if(!group) return res.sendStatus(404);
+
+        const conversation = await Conversation.findAll({
+            where: {groupID: req.params.id},
+            paranoid: true
+        }) ;
+        if (conversation)
+            for (const convo of conversation) {await convo.destroy() ;}
+
+
+        const asks = await Ask.findAll({
+            where: {groupID: req.params.id},
+            paranoid: true
+        }) ;
+        if(asks)
+            for (const ask of asks) {await ask.destroy();}
+
+        const messages = await Message.findAll({
+            where: {groupID: req.params.id},
+            paranoid:true
+        });
+        if(messages)
+            for(const message of messages) {
+                await message.destroy() ;
+            }
+
+
         await group.destroy();
         res.sendStatus(204);
     } catch (err) {res.sendStatus(500);console.error(err);}

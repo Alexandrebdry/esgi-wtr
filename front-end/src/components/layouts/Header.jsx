@@ -3,7 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../provider/UserProvider";
 import logo from "../../../public/images/logo.jpg";
 import {
-    AppBar,
+    AppBar, Avatar,
     Box,
     ButtonBase,
     Divider,
@@ -34,10 +34,28 @@ import {color_red, color_white} from "../../services/colors";
 import CustomList from "./list/CustomList";
 import CustomListItem from "./list/CustomListItem";
 import {createGroup, getConversations} from "../../services/groupServices";
+import ChatIcon from "./chat/ChatIcon";
+import {SnackbarContext} from "../provider/SnackbarProvider";
+
+const drawerWidth = 240;
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-start',
+}));
+
 
 export default function () {
     const { user, setUserInformation} = useContext(UserContext) ;
     const scrollNavigate = useScrollNavigate() ;
+    const {openSnackbar} = useContext(SnackbarContext) ;
+    const [open, setOpen] = useState(false);
+    const [conversations, setConversation] = useState(null) ;
+    const [isNewConversation, setIsNewConversation] = useState(false) ;
+    const theme = useTheme();
 
     const redirectMenu = (route) => {
         if(route === '/')
@@ -45,35 +63,51 @@ export default function () {
                 return
             }
         scrollNavigate(route) ;
-    }
+    };
 
     const logoutUser = () => {
         setUserInformation(null) ;
+        setConversation(null) ;
         scrollNavigate('/login') ;
-    }
+        openSnackbar('Vous avez été déconnecté','info');
+    };
 
-    const drawerWidth = 240;
-
-    const DrawerHeader = styled('div')(({ theme }) => ({
-        display: 'flex',
-        alignItems: 'center',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-        justifyContent: 'flex-start',
-    }));
-    const [open, setOpen] = useState(false);
-    const theme = useTheme();
     const handleDrawerOpen = () => {
         setOpen(true);
     };
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const newGroup = async () => {
+        await createGroup({
+            maxUsers:4,
+            ownerID: user.id,
+            isPrivate: true,
+            name: "Groupe de " + user.firstName
+        });
+        setIsNewConversation(true) ;
+        openSnackbar("Vous venez de créer un nouveau groupe") ;
+    }
+    const getConversation = async () => {
+        try {
+            if(user) {
+                const res = await getConversations(user.id) ;
+                const data = await res.json() ;
+                console.log(data) ;
+                setConversation(data) ;
+                setIsNewConversation(false) ;
+            }
+
+        } catch (err) {console.error(err);}
+    }
+    useEffect(() => {
+        getConversation() ;
+    },[user, isNewConversation]) ;
+
     const divider = (
         <Divider sx={{bgcolor:color_white}}/>
-    )
-
+    );
     const sellerList = (
         <ListItemButton onClick={() => {scrollNavigate('/sellers')}}>
             <ListItemIcon sx={{color:color_white}}> <SettingsApplications/> </ListItemIcon>
@@ -87,43 +121,13 @@ export default function () {
         </ListItemButton>
     );
 
-    const newGroup = async () => {
-        const group = await createGroup({
-            maxUsers:4,
-            ownerID: user.id,
-            isPrivate: true,
-            name: "Groupe de " + user.firstName
-        });
-        setIsNewConversation(true) ;
-
-    }
-
-    const [conversations, setConversation] = useState(null) ;
-    const [isNewConversation, setIsNewConversation] = useState(false) ;
-    const getConversation = async () => {
-        try {
-            if(user) {
-                const res = await getConversations(user.id) ;
-                const data = await res.json() ;
-                setConversation(data) ;
-                console.log(data) ;
-                setIsNewConversation(false) ;
-            }
-
-        } catch (err) {console.error(err);}
-    }
-
-    useEffect(() => {
-        getConversation() ;
-    },[user, isNewConversation]) ;
-
     return (
         <header>
              <Box flexGrow={1} >
                  <AppBar color={"transparent"}  position={"fixed"} p={2} sx={{minWidth:300 , backgroundColor: color_red +'!important'}}>
                      <Toolbar>
                          <ButtonBase disableTouchRipple sx={{display:'flex', alignItems:'center', justifyContent:'center'}} onClick={() => {redirectMenu('/')}}>
-                             <Box component={'img'} mr={2} width={50} height={50} alt={'Logo du site'} src={logo} />
+                             <Avatar sx={{mr:2}} width={50} height={50} alt={'Logo du site'} src={logo} />
                              <Typography style={{color:color_white}}>Un site de moto</Typography>
                          </ButtonBase>
                          <Box flexGrow={1}/>
@@ -162,7 +166,7 @@ export default function () {
                             <CustomListItem text={"Mes conversations"} icon={<Message/>}/>
                             { conversations && conversations.map((convo, key) => {
                                 return (
-                                    <CustomListItem key={key} text={convo.name} icon={convo?.avatar} clickEvent={()=>{scrollNavigate( `/conversation/${convo.id}`)}} />
+                                    <CustomListItem key={key} text={convo.name} icon={<ChatIcon groupID={convo.id} ownerID={convo.ownerID} />} clickEvent={()=>{scrollNavigate( `/conversation/${convo.id}`)}} />
                                 );
                             }) }
                         </>

@@ -1,11 +1,12 @@
 import {useContext, useState} from "react";
 import {SnackbarContext} from "../../provider/SnackbarProvider";
-import {Avatar, Box, Button, Grid, Link, Stack, TextField, Typography} from "@mui/material";
+import {Avatar, Box, Grid, Link, TextField, Typography} from "@mui/material";
 import {Login} from "@mui/icons-material";
 import useScrollNavigate from "../../hooks/useScrollNavigate";
 import {loginService} from "../../../services/authServices";
 import {UserContext} from "../../provider/UserProvider";
-import {color_red, color_red_hover} from "../../../services/colors";
+import {color_red} from "../../../services/colors";
+import FormButton from "../../layouts/button/FormButton";
 
 
 export default function () {
@@ -57,7 +58,7 @@ export default function () {
                         <TextField type={"password"} fullWidth required id={"password"} label={"mot de passe"} name={"password"} autoComplete={"password"} value={password} onChange={handleChange} />
                     </Grid>
                     <Grid item xs={12}>
-                        <Button sx={{bgcolor: color_red, '&:hover': {bgcolor: color_red_hover}}} type={"submit"} fullWidth variant={"contained"} >se connecter</Button>
+                        <FormButton name={"se connecter"}/>
                     </Grid>
                 </Grid>
 

@@ -2,10 +2,10 @@ import {basePath} from "./basePath";
 const path = basePath + 'groups' ;
 const pathGrp = basePath + 'conversations' ;
 
-export const getGroups = async () => {
-    return await fetch(path,{
+export const getGroups = async (url) => {
+    return await fetch(path + '?' + url,{
         headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
-    }).then(res => res.json());
+    });
 };
 
 export const getGroup = async (id) => {
@@ -13,6 +13,13 @@ export const getGroup = async (id) => {
         headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
     }).then(res => res.json());
 };
+
+export const deleteGroup = async (id) => {
+    return await fetch(path+'/'+id, {
+        method: 'DELETE',
+        headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
+    }) ;
+}
 
 /**
  *
@@ -48,7 +55,6 @@ export const addToGroup = async (user,group) => {
             userID: user,
             groupID: group.id,
             name: group.name,
-            slug: group.slug,
             avatar: group?.avatar ?? null
         })
     })
