@@ -62,12 +62,12 @@ export const useRoutes = () => {
                 </RouterSecured>
         },
         {
-          name:'groups',
-          path:'my-groups',
-          element:
-            <RouterSecured>
-                <MyGroups/>
-            </RouterSecured>
+            name:'groups',
+            path:'my-groups',
+            element:
+                <RouterSecured>
+                    <MyGroups/>
+                </RouterSecured>
         },
         {
             name:'not-found',

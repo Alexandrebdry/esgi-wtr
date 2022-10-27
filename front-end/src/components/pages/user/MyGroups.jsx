@@ -6,7 +6,6 @@ import Groups from "../../layouts/tab/Groups";
 export default function () {
 
     const {user} = useContext(UserContext) ;
-
     return (
         user &&
         <Box mt={15} >

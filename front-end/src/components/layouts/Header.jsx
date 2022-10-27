@@ -94,7 +94,6 @@ export default function () {
             if(user) {
                 const res = await getConversations(user.id) ;
                 const data = await res.json() ;
-                console.log(data) ;
                 setConversations(data) ;
                 setIsGroupChanged(false) ;
             }

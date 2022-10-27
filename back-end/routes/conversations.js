@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {Conversation} = require("../models");
+const {Conversation, Group} = require("../models");
 const {body} = require("express-validator");
 
 const router = Router();
@@ -24,6 +24,18 @@ router.get('/conversations', async (req,res) => {
        res.json(conversations) ;
    } catch (err) {res.sendStatus(500);console.error(err);}
 });
+
+router.patch('/conversation/:id', async (req,res) => {
+    try{
+        const conversation = await Conversation.findOne({
+            where: {id: req.params.id},
+            paranoid: true
+        });
+        if(!conversation) return res.sendStatus(404);
+        await conversation.update(req.body);
+        res.json(conversation);
+    } catch(err) {res.sendStatus(500);console.error(err);}
+})
 
 module.exports = router;
 
