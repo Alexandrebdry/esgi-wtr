@@ -3,6 +3,7 @@ import {UserContext} from "../provider/UserProvider";
 import useScrollNavigate from "../hooks/useScrollNavigate";
 import {Box, Stack, Typography} from "@mui/material";
 import {color_white} from "../../services/colors";
+import Chat from "../layouts/Chat";
 
 export default function ({}) {
 
@@ -27,8 +28,8 @@ export default function ({}) {
                             <Typography textAlign={"center"} fontWeight={"bolder"} variant={"h1"}> Site de moto </Typography>
                             <Typography alignSelf={{xs:'center', sm:'flex-end'}}>un site de moto pas comme les autres</Typography>
                         </Stack>
+                        <Chat />
                     </Box>
-
                 </div>
             </Box>
     );
