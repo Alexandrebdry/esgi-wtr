@@ -14,6 +14,14 @@ export const getGroup = async (id) => {
     }).then(res => res.json());
 };
 
+export const patchGroup = async (group) => {
+    return await fetch(path+'/'+ group.id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json',authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')},
+        body: JSON.stringify(group)
+    }) ;
+}
+
 export const deleteGroup = async (id) => {
     return await fetch(path+'/'+id, {
         method: 'DELETE',
@@ -80,3 +88,4 @@ export const getConversations = async (user) => {
       headers:{authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`}
   }) ;
 };
+

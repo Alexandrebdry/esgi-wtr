@@ -60,6 +60,14 @@ router.patch('/groups/:id', async (req, res) => {
         });
         if(!group) return res.sendStatus(404);
         await group.update(req.body);
+        const conversations = await Conversation.findAll({
+            where: {groupID: group.id},
+            paranoid: true
+        }) ;
+        if(conversations)
+            for(const conversation of conversations) {
+                await conversation.update({name: group.name}) ;
+            }
         res.json(group);
     } catch (err) {res.sendStatus(500);console.error(err);}
 });
