@@ -1,30 +1,61 @@
-import {Box, Grid, Stack, Typography} from "@mui/material";
-import {useState} from "react";
-import {text_color} from "../../services/colors";
-import FormButton from "../layouts/button/FormButton";
+import {Box, Container, Grid, Typography} from "@mui/material";
+import {useEffect, useState} from "react";
+import {getGroups} from "../../services/groupServices";
+import GroupHeader from "../layouts/chat/GroupHeader";
 
 export default function ({}) {
 
-    const [loader, setLoader] = useState(false) ;
+    const [loader, setLoader] = useState(true) ;
+    const [users, setUsers] = useState(null) ;
+    const [groups, setGroups] = useState(null) ;
+
+    const getAllGroups = async () => {
+       const res = await getGroups('') ;
+       if(res.status < 400) {
+           setGroups(await res.json()) ;
+           setLoader(false) ;
+       }
+    } ;
+
+    useEffect(() => {
+        getAllGroups() ;
+    },[]) ;
 
     return (
         !loader &&
         <Box mt={15}>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography variant={"body1"} pl={5}> Liste des groupes </Typography>
-                    <Grid container>
-
+            <Container maxWidth={"lg"}>
+                <Grid container spacing={1} >
+                    <Grid item xs={12} sm={6}>
+                        <Typography mb={2} variant={"h5"} pl={5}> Liste des groupes </Typography>
+                        <Grid mb={5} ml={2} container spacing={1}>
+                            {
+                                groups && groups.map((group,key) => {
+                                    return(
+                                        <Grid item xs={11} lg={12} key={key}>
+                                            <GroupHeader group={group} />
+                                        </Grid>
+                                    )
+                                })
+                            }
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography mb={2} variant={"h5"} pl={5}> Personnes connectées </Typography>
+                        <Grid mb={5} ml={2} container spacing={1}>
+                            {
+                                groups && groups.map((group,key) => {
+                                    return(
+                                        <Grid item xs={11} lg={12} key={key}>
+                                            <GroupHeader group={group} />
+                                        </Grid>
+                                    )
+                                })
+                            }
+                        </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <Typography variant={"body1"} pl={5}> Personnes connectées </Typography>
-                    <Grid container>
-
-                    </Grid>
-                </Grid>
-            </Grid>
-
+            </Container>
         </Box>
     );
 }
