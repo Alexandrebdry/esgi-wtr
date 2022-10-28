@@ -9,6 +9,7 @@ import RegisterConfirmation from "../pages/auth/RegisterConfirmation";
 import ForgetPassword from "../pages/auth/ForgetPassword";
 import ChangePassword from "../pages/auth/ChangePassword";
 import MyGroups from "../pages/user/MyGroups";
+import Groups from "../pages/Groups";
 
 export const useRoutes = () => {
     const routes = [
@@ -62,11 +63,19 @@ export const useRoutes = () => {
                 </RouterSecured>
         },
         {
-            name:'groups',
+            name:'myGroups',
             path:'my-groups',
             element:
                 <RouterSecured>
                     <MyGroups/>
+                </RouterSecured>
+        },
+        {
+            name: 'groups',
+            path: 'groups',
+            element:
+                <RouterSecured>
+                    <Groups/>
                 </RouterSecured>
         },
         {

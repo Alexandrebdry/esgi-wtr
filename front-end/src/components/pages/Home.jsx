@@ -2,8 +2,8 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../provider/UserProvider";
 import useScrollNavigate from "../hooks/useScrollNavigate";
 import {Box, Stack, Typography} from "@mui/material";
-import {color_white} from "../../services/colors";
-import {createGroup} from "../../services/groupServices";
+import {text_color} from "../../services/colors";
+import FormButton from "../layouts/button/FormButton";
 
 export default function ({}) {
 
@@ -21,12 +21,16 @@ export default function ({}) {
             <Box>
                 <div style={{
                     height:'100vh', backgroundImage: "url('images/hero-banner.jpg')",
-                    backgroundRepeat: 'no-repeat', backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat', backgroundSize: 'cover' ,
                 }}>
-                    <Box margin={'auto'} width={'100%'} height={'100%'} color={color_white} display={"flex"}  justifyContent={"flex-end"}>
-                        <Stack marginRight={{xs: 0 , md:40}} height={'100%'} color={color_white} display={"flex"} alignItems={{xs: 'center', sm:'flex-start'}} justifyContent={"center"}>
+                    <Box margin={'auto'} width={'100%'} height={'100%'} color={text_color} display={"flex"}  justifyContent={"flex-start"}>
+                        <Stack marginLeft={{xs: 0 , md:10}} height={'100%'} color={text_color} display={"flex"} alignItems={{xs: 'center', sm:'flex-start'}} justifyContent={"center"}>
                             <Typography textAlign={"center"} fontWeight={"bolder"} variant={"h1"}> Site de moto </Typography>
-                            <Typography alignSelf={{xs:'center', sm:'flex-end'}}>un site de moto pas comme les autres</Typography>
+                            <Typography alignSelf={{xs:'center', md:"flex-start"}}>Un site communautaire autour de la moto , venez discuter !</Typography>
+                            <Box mt={4} mb={9}>
+                                <FormButton clickHandler={() => {scrollNavigate('/groups')}} form={false} name={'Commencer à discuter'}/>
+                            </Box>
+
                         </Stack>
                     </Box>
 
