@@ -24,11 +24,8 @@ export default function ({list}) {
     const joinGroup = async () => {
         try {
             const group = await getGroupToJoin() ;
-            console.log(group) ;
-            console.log(list) ;
             if(group.maxUsers > group.members.length) {
                 const res = await addToGroup(list.userID, group) ;
-                console.log(res) ;git
                 if(res.status <300) {
                     await deleteAsk(list.id) ;
                     openSnackbar(`${list.user_id.firstName} a été ajouté au groupe`) ;
