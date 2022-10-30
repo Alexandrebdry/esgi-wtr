@@ -1,9 +1,8 @@
 const {Router} = require('express');
-const {Conversation, Group} = require("../models");
+const {Conversation} = require("../models");
 const {body} = require("express-validator");
 
 const router = Router();
-
 
 router.post('/conversations',
     body('userID').isInt(),

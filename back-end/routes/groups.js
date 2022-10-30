@@ -31,7 +31,7 @@ router.get('/groups/:id', async (req, res) => {
             const group = await Group.findOne({
                 where: {id: req.params.id, ...req.query},
                 include: [
-                    {model: User , as: 'members', attributes: ['id', 'firstName', 'lastName', 'avatar', 'slug']},
+                    {model: User , as: 'members', attributes: ['id', 'firstName', 'lastName', 'avatar']},
                     {model: Ask, as: 'requests', attributes: ['userID']},
                 ],
                 paranoid: true
