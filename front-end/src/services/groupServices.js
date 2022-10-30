@@ -2,7 +2,7 @@ import {basePath} from "./basePath";
 const path = basePath + 'groups' ;
 const pathGrp = basePath + 'conversations' ;
 
-export const getGroups = async (url) => {
+export const getGroups = async (url='') => {
     return await fetch(path + '?' + url,{
         headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
     });
