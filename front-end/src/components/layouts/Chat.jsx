@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { color_white } from "../../services/colors";
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, FilledInput } from "@mui/material";
 
 const Chat = () => {
 
@@ -33,7 +33,8 @@ const Chat = () => {
             {isShown && (
                 <div className="chat">
                     <Typography fontSize={"2rem"}>Chatty the Chatbot</Typography>
-                    <input
+                    {chatMessage.map((msg) => <p key={msg}>{msg}</p>)}
+                    <FilledInput
                         type="text"
                         id="message"
                         name="message"
@@ -43,7 +44,7 @@ const Chat = () => {
                         // value={message}
                     />
                     {/* {message.map((msg) => <p>{msg}</p>)} */}
-                    {chatMessage.map((msg) => <p key={msg}>{msg}</p>)}
+                    
                 </div>
             )}
         </Box>
