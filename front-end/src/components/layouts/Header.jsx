@@ -55,7 +55,7 @@ export default function () {
     const {openSnackbar} = useContext(SnackbarContext) ;
     const [open, setOpen] = useState(false);
     const {conversations, setConversations, isGroupChanged, setIsGroupChanged} = useContext(GroupContext) ;
-    const theme = useTheme();
+
 
     const redirectMenu = (route) => {
         if(route === '/')
@@ -96,6 +96,7 @@ export default function () {
                 const data = await res.json() ;
                 setConversations(data) ;
                 setIsGroupChanged(false) ;
+
             }
 
         } catch (err) {console.error(err);}
@@ -165,7 +166,7 @@ export default function () {
                             <CustomListItem text={"Mes conversations"} icon={<Message/>}/>
                             { conversations && conversations.map((convo, key) => {
                                 return (
-                                    <CustomListItem key={key} text={convo.name} icon={<ChatIcon groupID={convo.id} ownerID={convo.ownerID} />} clickEvent={()=>{scrollNavigate( `/conversation/${convo.id}`)}} />
+                                    <CustomListItem key={key} text={convo.name} icon={<ChatIcon groupID={convo.id} ownerID={convo.ownerID} />} clickEvent={()=>{scrollNavigate( `/conversation/${convo.groupID}`)}} />
                                 );
                             }) }
                         </>

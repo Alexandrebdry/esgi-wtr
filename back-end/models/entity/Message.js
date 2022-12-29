@@ -15,6 +15,11 @@ Message.init({
     isUpdated: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+    },
+    isModerated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     }
 },{
     sequelize: connection,

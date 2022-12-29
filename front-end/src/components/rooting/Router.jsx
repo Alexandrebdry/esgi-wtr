@@ -10,6 +10,7 @@ import ForgetPassword from "../pages/auth/ForgetPassword";
 import ChangePassword from "../pages/auth/ChangePassword";
 import MyGroups from "../pages/user/MyGroups";
 import Groups from "../pages/Groups";
+import Conversation from "../pages/Conversation";
 
 export const useRoutes = () => {
     const routes = [
@@ -83,6 +84,14 @@ export const useRoutes = () => {
             path: '*',
             element:
                 <NotFound/>
+        },
+        {
+            name:'conversation',
+            path: 'conversation/:id',
+            element:
+                <RouterSecured>
+                    <Conversation/>
+                </RouterSecured>
         }
     ] ;
 
