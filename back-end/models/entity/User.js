@@ -43,6 +43,11 @@ User.init({
     resetPasswordToken: {
         type: DataTypes.STRING,
         allowNull: true,
+    },
+    isOnline:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     }
 },
     {

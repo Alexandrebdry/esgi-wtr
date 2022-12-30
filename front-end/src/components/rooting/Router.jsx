@@ -10,6 +10,9 @@ import ForgetPassword from "../pages/auth/ForgetPassword";
 import ChangePassword from "../pages/auth/ChangePassword";
 import MyGroups from "../pages/user/MyGroups";
 import Groups from "../pages/Groups";
+import AdvisorHome from "../pages/advisors/home";
+import { UserContext } from "../provider/UserProvider";
+import { SCOPES } from "./permissions";
 
 export const useRoutes = () => {
     const routes = [
@@ -83,7 +86,16 @@ export const useRoutes = () => {
             path: '*',
             element:
                 <NotFound/>
+        },
+        {
+            name: 'AdvisorHome',
+            path: '/advisor/home',
+            element:
+                <RouterSecured scopes={[SCOPES.ADVISOR]}>
+                    <AdvisorHome/>
+                </RouterSecured>
         }
+
     ] ;
 
     return routes.map((route) => {
