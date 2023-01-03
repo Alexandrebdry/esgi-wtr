@@ -35,7 +35,6 @@ router.post('/register', [
                     lastName: newUser.lastName,
                     email: newUser.email,
                     role: newUser.role,
-                    slug: newUser.slug
                 });
             }
 
@@ -80,12 +79,12 @@ router.get('/verify', authMiddleware  , async (req,res) => {
     });
     if(!user) return res.sendStatus(401);
     else return res.json({
+        id:user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         avatar: user.avatar,
         role: user.role,
-        slug: user.slug,
     });
 });
 
@@ -107,12 +106,12 @@ router.post('/login', async (req,res) => {
         refreshTokens.push(refreshToken) ;
 
         return res.json({
+            id:user.id,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
             avatar: user.avatar,
             role: user.role,
-            slug: user.slug,
             accessToken,
             refreshToken
         });

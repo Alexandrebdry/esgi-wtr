@@ -15,7 +15,7 @@ export default function ({icon, color_icon= color_white ,text, clickEvent }) {
 
     return (
         clickEvent?
-            <ListItemButton sx={{width:'100%'}} onClick={(evt)=>{clickEvent()}}>
+            <ListItemButton sx={{width:'100%'}} onClick={clickEvent}>
                 {iconList}
                 {textList}
             </ListItemButton> :

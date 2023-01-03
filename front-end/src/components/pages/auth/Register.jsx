@@ -2,9 +2,10 @@ import {useContext, useState} from "react";
 import {SnackbarContext} from "../../provider/SnackbarProvider";
 import useScrollNavigate from "../../hooks/useScrollNavigate";
 import {registerService} from "../../../services/authServices";
-import {Avatar, Box, Button, Grid, Link, TextField, Typography} from "@mui/material";
+import {Avatar, Box, Grid, Link, TextField, Typography} from "@mui/material";
 import {Person} from "@mui/icons-material";
-import {color_black, color_red, color_red_hover} from "../../../services/colors";
+import {color_red} from "../../../services/colors";
+import FormButton from "../../layouts/button/FormButton";
 
 export default function Register () {
 
@@ -70,7 +71,7 @@ export default function Register () {
                         <TextField required fullWidth autoComplete={"new-password"} name={"passwordConfirm"} onChange={(evt)=>{setPasswordConfirm(evt.target.value)}} id={"passwordConfirm"} value={passwordConfirm} label={"Confirmer le mot de passe"} type={"password"}  />
                     </Grid>
                     <Grid item xs={12}>
-                        <Button sx={{bgcolor: color_red, '&:hover': {bgcolor: color_red_hover}}} type={"submit"} fullWidth variant={"contained"} >s'inscrire</Button>
+                        <FormButton name={"s'inscrire"}/>
                     </Grid>
                 </Grid>
                 <Box mt={1} display={"flex"} justifyContent={"flex-end"}>

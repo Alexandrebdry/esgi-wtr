@@ -1,7 +1,5 @@
 const {DataTypes, Model} = require ("sequelize");
 const connection = require ("../database");
-const SequelizeSlugify = require ('sequelize-slugify');
-
 
 class Message extends Model {}
 
@@ -10,11 +8,6 @@ Message.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
-    slug: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: true,
-    },
     isRead: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -22,6 +15,11 @@ Message.init({
     isUpdated: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+    },
+    isModerated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     }
 },{
     sequelize: connection,
@@ -29,7 +27,5 @@ Message.init({
     paranoid: true,
 });
 
-SequelizeSlugify.slugifyModel(Message, {
-    source: ['text', 'senderID']
-})
+
 module.exports = Message;
