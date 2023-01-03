@@ -28,9 +28,9 @@ export default function ({}) {
                             <Typography textAlign={"center"} fontWeight={"bolder"} variant={"h1"}> Site de moto </Typography>
                             <Typography alignSelf={{xs:'center', sm:'flex-end'}}>un site de moto pas comme les autres</Typography>
                         </Stack>
-                        <Chat />
                     </Box>
                 </div>
+                <Chat />
             </Box>
     );
 
