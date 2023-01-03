@@ -2,8 +2,11 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../provider/UserProvider";
 import useScrollNavigate from "../hooks/useScrollNavigate";
 import {Box, Stack, Typography} from "@mui/material";
-import {text_color} from "../../services/colors";
+
+import {text_color, color_white} from "../../services/colors";
 import FormButton from "../layouts/button/FormButton";
+import Chat from "../layouts/Chat";
+
 
 export default function ({}) {
 
@@ -33,8 +36,8 @@ export default function ({}) {
 
                         </Stack>
                     </Box>
-
                 </div>
+                <Chat />
             </Box>
     );
 
