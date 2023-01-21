@@ -13,18 +13,6 @@ export const getCreneauIs = async (url='') => {
     });
 }
 
-export const getCreneauIsOffRoad = async (url='') => {
-    return await fetch(pathCreneau + url,{
-        headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
-    });
-}
-
-export const getCreneauIsSportDriver = async (url='') => {
-    return await fetch(pathCreneau + url,{
-        headers: {authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')}
-    });
-}
-
 export const patchCreneau = async (id, user) => {
     return await fetch(pathCreneau+'/'+ id, {
         method: 'PATCH',
