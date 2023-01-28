@@ -57,25 +57,18 @@ export default function () {
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
-        // { field: 'firstName', headerName: 'Prénom', width: 130 },
-        // { field: 'lastName', headerName: 'Nom', width: 130 },
         { field: 'name', headerName: 'name', width: 130 },
         { field: 'createdAt', headerName: 'Créée le', width: 130},
        
     ];
 
-    const rows = [
-        // {id: '1', lastName: 'Alexandre', firstName: 'Baudry', createdAt: '10/04/2022'},
-        // {id: '2', lastName: 'Waruny', firstName: 'Rajendran', createdAt: '10/06/2022'},
-    ];
+    const rows = [];
 
     conv ? conv.map((el) => 
-            // {id: '1', lastName: 'Alexandre', firstName: 'Baudry', createdAt: '10/04/2022'},
         rows.push(el)
     ) : ''; 
 
     rows ? rows.map((el, index) => 
-            // {id: '1', lastName: 'Alexandre', firstName: 'Baudry', createdAt: '10/04/2022'},
         el.id = index
     ) : ''; 
 
@@ -106,7 +99,6 @@ export default function () {
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
-                    // checkboxSelection
                 />
             </div>
         </>
