@@ -109,7 +109,7 @@ export default function () {
         <Divider sx={{bgcolor:color_white}}/>
     );
     const sellerList = (
-        <ListItemButton onClick={() => {scrollNavigate('/sellers')}}>
+        <ListItemButton onClick={() => {scrollNavigate('/advisor/home')}}>
             <ListItemIcon sx={{color:color_white}}> <SettingsApplications/> </ListItemIcon>
             <ListItemText primary={"Conseiller"}/>
         </ListItemButton>
@@ -177,7 +177,7 @@ export default function () {
                             <CustomListItem icon={<Logout/>} text={"Se déconnecter"} clickEvent={() => {logoutUser()}} />
                             { user && user?.role !== 'user' && divider}
                             {
-                                user && user?.role === 'seller' &&
+                                user && user?.role === 'advisor' &&
                                 sellerList
                             }
                             {user && user?.role === 'admin' &&
