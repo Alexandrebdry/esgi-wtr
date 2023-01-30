@@ -36,6 +36,17 @@ router.patch('/conversation/:id', async (req,res) => {
     } catch(err) {res.sendStatus(500);console.error(err);}
 })
 
+router.get('/userConversation/:id', async (req,res) => {
+    try{
+        const conversation = await Conversation.findAll({
+            where: {userID: req.params.id},
+            paranoid: true
+        });
+        if(!conversation) return res.sendStatus(404);
+        res.json(conversation);
+    } catch(err) {res.sendStatus(500);console.error(err);}
+})
+
 module.exports = router;
 
 
