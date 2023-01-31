@@ -22,7 +22,7 @@ export default function WorkFlow1() {
 
   const sendFormOne = (index) => {
     setIndex(index);
-    console.log(index);
+
   }
 
   const getCreneau = async() => {
@@ -30,7 +30,7 @@ export default function WorkFlow1() {
       if(user) {
         const response = await getCreneaux();
         const data = await response.json();
-        console.log(data);
+
         setIndex(4);
         setCreneaux(data);
       }
@@ -49,7 +49,7 @@ export default function WorkFlow1() {
   }
 
   const SendFormThree = async(index) => {
-    console.log(radioChoice);
+
     if (radioChoice === 'no') {
       setRadioNo("Vous ne souhaitez pas faire vérifier votre véhicule.");
     }
@@ -57,7 +57,7 @@ export default function WorkFlow1() {
       setIndex(index);
       const response = await getCreneaux();
       const data = await response.json();
-      console.log(data);
+
       setCreneaux(data);
     }
   }

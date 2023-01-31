@@ -25,7 +25,7 @@ export default function ({}) {
 
         socket.on('read-message-from-'+conversationID, message => {
             setMessages(message) ;
-            console.log(message) ;
+
         }) ;
 
         getMessages() ;
@@ -34,7 +34,7 @@ export default function ({}) {
 
 
     const getMessages = async () => {
-        const response = await fetch('http://localhost:4000/api/messages', {
+        const response = await fetch('http://localhost:4000/api/messages?conversationId='+ conversationID, {
             headers:{
                 authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')
             }

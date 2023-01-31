@@ -12,7 +12,7 @@ const WorkFlow2 = () => {
   const [confirmChoice, setConfirmChoice] = useState("");
 
   const choiceUsage = async(index) => {
-    console.log(index);
+
     setIndex(index);
     if(index === 1) {
       const response = await getCreneauIs('/isDriver?');
@@ -33,14 +33,14 @@ const WorkFlow2 = () => {
 
   const chooseTimeDriver = (creneauDrive) => {
     setIndex(5);
-    console.log(creneauDrive);
+
     setCreneauIs(creneauDrive)
   }
 
   const confirmCreneauReservation = async(creneau) => {
     const responsePatch = await patchCreneau(creneau, user);
     const dataPatch = await responsePatch.json();
-    console.log(dataPatch);
+
     setConfirmChoice('Votre rendez-vous est confirmé !');
   }
 

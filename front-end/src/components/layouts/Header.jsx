@@ -33,7 +33,7 @@ import {
 import {color_red, color_white} from "../../services/colors";
 import CustomList from "./list/CustomList";
 import CustomListItem from "./list/CustomListItem";
-import {createGroup, getConversations, getGroupsServices} from "../../services/groupServices";
+import {createGroup,  getGroupsServices} from "../../services/groupServices";
 import ChatIcon from "./chat/ChatIcon";
 import {SnackbarContext} from "../provider/SnackbarProvider";
 import {GroupContext} from "../provider/GroupProvider";
@@ -92,19 +92,27 @@ export default function () {
             isPrivate: true,
             name: "Groupe de " + user.firstName
         });
-        setIsGroupChanged(true) ;
         openSnackbar("Vous venez de créer un nouveau groupe") ;
+        getConversation() ;
     }
     const getConversation = async () => {
         try {
             if(user) {
-                const res = await getConversations(user.id) ;
-                const data = await res.json() ;
-
                 const response = await getGroupsServices('?userId=' + user.id) ;
-                const groups = await response.json() ;
-                setConversations(groups) ;
-                setIsGroupChanged(false) ;
+                const data = await response.json() ;
+                const groups = [] ;
+                const groupdsID = [] ;
+
+                for (const members of data.members) {
+                    groupdsID.push(members.groupId) ;
+                }
+
+                for(const group of data.groups) {
+                   if ( ! groups.find( grp => grp.id === group.id))
+                       if (groupdsID.find(grp => grp === group.id))
+                        groups.push(group) ;
+                }
+                setConversations(groups);
 
             }
 

@@ -18,7 +18,7 @@ export default function ({}) {
            setGroups(group) ;
            setLoader(false) ;
        }
-       console.log(group) ;
+
 
     } ;
 

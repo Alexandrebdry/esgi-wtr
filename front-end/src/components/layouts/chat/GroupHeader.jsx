@@ -25,7 +25,7 @@ export default function ({group}) {
 
     const getMembers = async () => {
         const response = await getGroupsServices('?groupId=' + group.id) ;
-        setMembers(await response.json()) ;
+        setMembers(await response.json()['members']) ;
     }
     const askToJoin = async (group) => {
         try {
