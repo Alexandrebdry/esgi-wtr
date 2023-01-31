@@ -37,6 +37,12 @@ Rendez-vous sur : http://localhost:3000
 docker compose exec back-end npm run migrate --workspace=back-end 
 ```
 
+## Espace Conseillé
+
+Pour accéder à l'espace conseillé, il faut créer un utilisateur ayant le rôle "advisor". L'accès à l'espace conseillé s'affichera alors
+dans le menu.
+![Alt text](./advisor.png?raw=true "Title")
+
 ## Contributors 
 - [Alexandre BAUDRY](https://github.com/Alexandrebdry)
 - [Waruny RAJENDRAN](https://github.com/WarunyRajendran)
