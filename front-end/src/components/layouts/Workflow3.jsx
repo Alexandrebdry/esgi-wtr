@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Stack, Button} from '@mui/material';
-import { color_red } from '../../services/colors';
+import { Stack, Button, Typography} from '@mui/material';
+import { color_white, color_red, color_red_hover } from '../../services/colors';
 
 const WorkFlow3 = () => {
   const [contact, setContact] = useState(['Adresse mail', 'Numéro de téléphone'])
@@ -12,13 +12,13 @@ const WorkFlow3 = () => {
 
   return (
     <Stack>
+      <Typography sx={{textAlign: 'center', fontSize: '18px'}}>Contact</Typography>
       {contact.map((contact, index) =>
         <Button
           key={index}
-          className="bot_message"
           variant="contained"
-          sx={{backgroundColor: '#EDECED', color: 'black', borderRadius: 10, 
-          '&:hover': {backgroundColor: '#EDECED'}}}
+          fullWidth
+          sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
           value={contact}
           style={{margin:'10px'}}
           onClick={(event) =>

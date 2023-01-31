@@ -1,173 +1,218 @@
-import React, { useState, useRef } from 'react';
-import { Stack, Box, Button, FilledInput, TextField, FormControlLabel, RadioGroup, Radio } from "@mui/material";
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { color_white, color_red, color_red_hover } from '../../services/colors';
+import FormButton from "../layouts/button/FormButton";
+import {getCreneaux, patchCreneau} from "../../services/creneauServices";
+import {UserContext} from "../provider/UserProvider";
+import { Stack, Box, Typography, Button, FilledInput, TextField, FormControlLabel, RadioGroup, Radio } from "@mui/material";
 
 export default function WorkFlow1() {
-  // const [firstWorkflow, setFirstWorflow] = useState(["Année du véhicule", "Date du dernier entretien"]);
+  const { user, setUserInformation} = useContext(UserContext) ;
+  const [index, setIndex] = useState(1);
   const [carYear, setCarYear] = useState("");
   const [lastMaintenance, setLastMaintenance] = useState("");
   const [kilometer, setKilometer] = useState("");
-  const [replace, setReplace] = useState(false);
-  const [replace2, setReplace2] = useState(false);
   const [radioChoice, setRadioChoice] = useState("yes");
   const [radioNo, setRadioNo] = useState("");
-  //index et créer des functions pour chaque return , index à 0
+  const [confirmChoice, setConfirmChoice] = useState("");
+  const [creneaux, setCreneaux] = useState([]);
 
   const current = new Date();
-  // const currentDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
-  // console.log(typeof(current.toLocaleDateString('fr')));
+  let count = current - new Date(lastMaintenance);
+  let numberDay = count / (1000 * 3600 * 24);
 
-  const sendFormOne = (event) => {
-    // let test = new Date(lastMaintenance);
-    // console.log(firstWorkflow);
-    // let test = parseInt(lastMaintenance, 10);
-    // setLastMaintenance(new Date("yyyy-MM-dd"));
-    // console.log(lastMaintenance.getTime());
-    // console.log(lastMaintenance + ' : ' + currentDate);
-    // console.log('currentDate :' , Date(currentDate));
-    // console.log('lastMaintenance :' , Date(lastMaintenance));
-    let count = current - new Date(lastMaintenance);
-    let numberDay = count / (1000 * 3600 * 24);
-    // console.log(Math.round(test1));
-    // console.log("Total number of days between dates  <br>"
-    //            + new Date(lastMaintenance) + "<br> and <br>" 
-    //            + current + " is: <br> " 
-    //            + test1);
-
-    if(numberDay > 365) {
-      console.log("Le dernier entretien est supérieur à un an");
-    }
-    else {
-      setReplace(true);
-      console.log("Le dernier entretien est inférieur à un an");
-
-    }
+  const sendFormOne = (index) => {
+    setIndex(index);
+    console.log(index);
   }
-  let textfieldOne;
-  let textfieldTwo;
-  let buttonForm;
-  let hola;
 
-  const SendFormTwo = (event) => {
-    console.log(kilometer);
-    if (kilometer >= 10000) {
-      console.log("c'est supérieur à 10000");
-    }
-    else {
-      setReplace2(true);
-      console.log("C'est inférieur à 10000");
-    }
+  const getCreneau = async() => {
+    try {
+      if(user) {
+        const response = await getCreneaux();
+        const data = await response.json();
+        console.log(data);
+        setIndex(4);
+        setCreneaux(data);
+      }
+    } catch (err) {console.error(err);}
+  }
+
+  const SendFormTwo = async(index) => {
+    setIndex(index);
+      const response = await getCreneaux();
+      const data = await response.json();
+      setCreneaux(data);
   }
 
   const onOptionChange = e => {
     setRadioChoice(e.target.value)
   }
 
-  const SendFormThree = (event) => {
+  const SendFormThree = async(index) => {
     console.log(radioChoice);
     if (radioChoice === 'no') {
-      setRadioNo("Vous ne souhaitez pas faire vérifier votre véhicule");
+      setRadioNo("Vous ne souhaitez pas faire vérifier votre véhicule.");
+    }
+    else {
+      setIndex(index);
+      const response = await getCreneaux();
+      const data = await response.json();
+      console.log(data);
+      setCreneaux(data);
     }
   }
 
-  if(replace === false) {
-    textfieldOne = <TextField type="text" name="dateVehicule" variant="standard" label="Année du véhicule" value={carYear} onChange={event => setCarYear(event.target.value)} style={{margin: '0.5vh'}} />
-    textfieldTwo = <TextField type="date" name="dateMaintenance" variant="standard" label="Date du dernier entretien" value={lastMaintenance} onChange={event => setLastMaintenance(event.target.value)} style={{margin: '0.5vh'}}/>
-    buttonForm = <Button
-                    onClick={(event) => 
-                      sendFormOne()
-                    }
-                    sx={{backgroundColor: '#EDECED', color: 'black', borderRadius: 10, marginTop: 5,
-                    '&:hover': {backgroundColor: '#EDECED'}}}
-                    type="submit"
-                  >
-                    Chercher
-                  </Button>
-  }
-  else if (replace2 === true) {
-    textfieldOne = <p>Souhaitez vous faire reviser votre véhicule ?</p>
-    textfieldTwo = <RadioGroup
-                    row
-                    sx={{justifyContent: 'center'}}
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    // defaultValue="yes"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel value="yes" control={<Radio />} label="Oui" checked={radioChoice === "yes"} onChange={onOptionChange} />
-                    <FormControlLabel value="no" control={<Radio />} label="Non" checked={radioChoice === "no"} onChange={onOptionChange} />
-                  </RadioGroup>
-    buttonForm = <Button
-                  onClick={(event) => 
-                    SendFormThree()
-                  }
-                  sx={{backgroundColor: '#EDECED', color: 'black', borderRadius: 10, marginTop: 5,
-                  '&:hover': {backgroundColor: '#EDECED'}}}
-                  type="submit" 
-                >
-                  Envoyer
-                </Button>
-    hola =  <p>{radioNo}</p>
-  }
-  else {
-    textfieldOne = <><p>{`Kilomètres parcourus depuis le ${lastMaintenance}`}</p><TextField type="number" name="kilometer" variant="standard" label='Kilomètres' value={kilometer} onChange={event => setKilometer(event.target.value)}/></>
-    buttonForm = <Button
-                  onClick={(event) => 
-                    SendFormTwo()
-                  }
-                  sx={{backgroundColor: '#EDECED', color: 'black', borderRadius: 10, marginTop: 5,
-                  '&:hover': {backgroundColor: '#EDECED'}}}
-                  type="submit"
-                >
-                  Envoyer
-                </Button>
+  const chooseTime = (creneaux) => {
+    setIndex(5);
+    setCreneaux(creneaux);
   }
 
-  // const handleChange = (event) => {
-  //   console.log(event);
-  // }
+  const confirmCreneau = async(creneau) => {
+    const responsePatch = await patchCreneau(creneau, user);
+    const dataPatch = await responsePatch.json();
+    setConfirmChoice('Votre rendez-vous est confirmé !');
+  }
 
-  return (
-    <>
-    {/* <Stack display={'flex'} justifyContent={'space-around'}>
-      {firstWorkflow.map((test, index) =>
-        <TextField
-          key={index}
-          type="date"
-          name="date"
-          label={test}
-          style={{margin: '0.5vh'}}
-          onChange={event => setFirstWorflow(event.target.value)}
-        />
-      )}
-      <Button
+  const template1 = () => {
+    return (
+      <>
+        <TextField type="text" name="dateVehicule" variant="standard" label="Année du véhicule" value={carYear} onChange={event => setCarYear(event.target.value)} style={{margin: '0.5vh'}} />
+        <TextField type="date" name="dateMaintenance" variant="standard" label="Date du dernier entretien" value={lastMaintenance} onChange={event => setLastMaintenance(event.target.value)} style={{margin: '0.5vh'}}/>
+        <Button
           onClick={(event) => 
-            sendForm()
+            sendFormOne(2)
           }
-          sx={{backgroundColor: '#EDECED', color: 'black', borderRadius: 10, marginTop: 5,
-          '&:hover': {backgroundColor: '#EDECED'}}}
+          variant="contained"
+          fullWidth
+          sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
           type="submit"
         >
           Chercher
         </Button>
-    </Stack> */}
+      </>
+    )
+  }
 
-      <Stack display={'flex'} justifyContent={'space-around'} >
-        {/* <TextField type="text" name="date" variant="standard" label="Année du véhicule" value={carYear} onChange={event => setCarYear(event.target.value)} style={{margin: '0.5vh'}} />
-        <TextField type="date" name="date" variant="standard" label="Date du dernier entretien" value={lastMaintenance} onChange={event => setLastMaintenance(event.target.value)} style={{margin: '0.5vh'}}/>
-         */}
-         {textfieldOne}
-         {textfieldTwo}
-         {buttonForm}
-         {hola}
-        {/* <Button
-          onClick={(event) => 
-            sendForm()
-          }
-          sx={{backgroundColor: '#EDECED', color: 'black', borderRadius: 10, marginTop: 5,
-          '&:hover': {backgroundColor: '#EDECED'}}}
-          type="submit"
+  const template2 = () => {
+    if (numberDay < 365) {
+      return (
+        <>
+          <p>{`Kilomètres parcourus depuis le ${lastMaintenance}`}</p>
+          <TextField type="number" name="kilometer" variant="standard" label='Kilomètres' value={kilometer} onChange={event => setKilometer(event.target.value)}/>
+          <Button
+            onClick={(event) => 
+              SendFormTwo(3)
+            }
+            variant="contained"
+            fullWidth
+            sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
+            type="submit"
+          >
+            Envoyer
+          </Button>
+        </>
+      )
+    }
+    else {
+      return (
+        <>
+          <p>{`Oulala votre véhicule à été révisé le ${lastMaintenance}, il est temps de le contrôler`}</p>
+          <Button
+            onClick={(event) =>
+              getCreneau()
+            }
+            variant="contained"
+            fullWidth
+            sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
+            type="submit" 
+          >
+            Choisir un créneau
+        </Button>
+        </>
+      )
+    }
+  }
+
+  const template3 = () => {
+    return (
+      <>
+        <p>Souhaitez vous faire reviser votre véhicule ?</p>
+        <RadioGroup
+          row
+          sx={{justifyContent: 'center'}}
+          aria-labelledby="demo-radio-buttons-group-label"
+          name="radio-buttons-group"
         >
-          Chercher
-        </Button> */}
+          <FormControlLabel value="yes" control={<Radio />} label="Oui" checked={radioChoice === "yes"} onChange={onOptionChange} />
+          <FormControlLabel value="no" control={<Radio />} label="Non" checked={radioChoice === "no"} onChange={onOptionChange} />
+        </RadioGroup>
+        <Button
+          onClick={(event) => 
+            SendFormThree(4)
+          }
+          variant="contained"
+          fullWidth
+          sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
+          type="submit" 
+        >
+          Envoyer
+        </Button>
+        <p>{radioNo}</p>
+      </>
+    )
+  }
+
+  const template4 = () => {
+    return (
+      <>
+        {creneaux.map((creneau, i) =>
+          <Button
+            key={i}
+            variant="contained"
+            fullWidth
+            sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
+            value={creneau}
+            onClick={(event) =>
+              chooseTime(creneau)
+            }
+          >
+            {creneau.date} à {creneau.hour}
+          </Button>
+        )}
+      </>
+    )
+  }
+
+  const template5 = () => {
+    return (
+      <>
+        <p>{`Rendez-vous le ${creneaux.date} à ${creneaux.hour}`}</p>
+        <p>Souhaitez vous le réserver ?</p>
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{bgcolor: color_red, margin: '5px', '&:hover': {bgcolor: color_red_hover}}}
+          onClick={(event) =>
+            confirmCreneau(creneaux.id)
+          }
+        >
+          Confirmer
+        </Button>
+        {confirmChoice}
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Typography sx={{textAlign: 'center', fontSize: '18px'}}>Entretien de votre véhicule</Typography>
+      <Stack display={'flex'} justifyContent={'space-around'} >
+        { index === 1 && template1() }
+        { index === 2 && template2() }
+        { index === 3 && kilometer < 10000 && template3() }
+        { index === 3 && kilometer >= 10000 && template4() }
+        { index === 4 && template4() }
+        { index === 5 && template5() }
       </Stack>
     </>
   )

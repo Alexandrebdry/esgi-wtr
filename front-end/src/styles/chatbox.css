@@ -27,16 +27,3 @@
   align-items: center;
   justify-content: space-between;
 }
-
-.bot_message {
-  color: #000000;
-  background: #EDECED;
-  width: 100%;
-  /* margin: 5px; */
-  border-style: none;
-  border-radius: 10px;
-  text-align: center;
-  font-size: 1.1rem;
-  padding: 12px;
-  cursor: pointer;
-}

@@ -6,10 +6,10 @@ class Agenda extends Model {}
 Agenda.init({
     userID:{
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
     date: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false,
     },
     hour: {
