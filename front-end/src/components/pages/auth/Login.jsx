@@ -31,7 +31,7 @@ export default function () {
             if(user?.message) throw new Error(user.message);
             setUserInformation(user) ;
             scrollNavigate("/") ;
-            console.log(sock) ;
+
             await addSocketID({userId: user.id, socketId: sock.id}) ;
 
         }

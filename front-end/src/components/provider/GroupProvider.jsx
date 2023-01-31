@@ -5,10 +5,9 @@ export const GroupContext = createContext({}) ;
 const GroupProvider = ({children}) => {
     const [groups, setGroups] = useState(null) ;
     const [conversations, setConversations] = useState(null) ;
-    const [isGroupChanged, setIsGroupChanged] = useState(false) ;
 
     return (
-        <GroupContext.Provider value={{groups, setGroups, conversations, setConversations, isGroupChanged, setIsGroupChanged}}>
+        <GroupContext.Provider value={{groups, setGroups, conversations, setConversations}}>
             {children}
         </GroupContext.Provider>
     )

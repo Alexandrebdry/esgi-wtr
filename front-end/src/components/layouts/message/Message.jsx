@@ -64,7 +64,7 @@ export function ModeratedMessage ({message, user}) {
     )
 }
 
-export function Message ({message, user, onEdit, onDelete, onReport, onRefAdd, onMouseLeave, onMouseOver, index ,isUpdated}) {
+export function Message ({message, user, onEdit, onDelete,  onRefAdd, onMouseLeave, onMouseOver, index ,isUpdated}) {
 
     return (
         <BaseMessage message={message} onMouseLeave={onMouseLeave} onMouseOver={onMouseOver} user={user} >
@@ -77,7 +77,7 @@ export function Message ({message, user, onEdit, onDelete, onReport, onRefAdd, o
             <Box display={'none'} flexDirection={'row'} alignItems={'center'} ref={(ref) => {onRefAdd(ref,index)}}>
                 <ButtonGroup  >
                     {
-                        message.senderID === user.id ?
+                        message.senderID === user.id &&
                             <Fragment>
                                 <IconButton onClick={onEdit} >
                                     <Edit sx={{color: color_white_hover}} />
@@ -86,10 +86,6 @@ export function Message ({message, user, onEdit, onDelete, onReport, onRefAdd, o
                                     <Delete sx={{color: color_white_hover}} />
                                 </IconButton>
                             </Fragment>
-                        :
-                        <IconButton onClick={onReport} >
-                            <ReportProblem sx={{color: color_white_hover}} />
-                        </IconButton>
 
                     }
 

@@ -13,7 +13,7 @@ export default function ({}) {
     const conversationID = useParams().id ;
     const {user} = useContext(UserContext) ;
     const {conversations, setConversations, isGroupChanged, setIsGroupChanged} = useContext(GroupContext) ;
-
+    const [editMessage, setEditMessage] = useState("") ;
     const [messages, setMessages] = useState([]) ;
     const [canSpeak, setCanSpeak] = useState(true) ;
     const [inEdit, setInEdit] = useState(false) ;
@@ -25,6 +25,7 @@ export default function ({}) {
 
         socket.on('read-message-from-'+conversationID, message => {
             setMessages(message) ;
+
         }) ;
 
         getMessages() ;
@@ -33,7 +34,7 @@ export default function ({}) {
 
 
     const getMessages = async () => {
-        const response = await fetch('http://localhost:4000/api/messages', {
+        const response = await fetch('http://localhost:4000/api/messages?conversationId='+ conversationID, {
             headers:{
                 authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')
             }
@@ -53,8 +54,20 @@ export default function ({}) {
         setInEdit(false) ;
         messageSenderRef.current.value = '' ;
     }
-    const confirmEdit = () => {
-        setInEdit(true) ;
+    const confirmEdit = async () => {
+        await fetch('http://localhost:4000/api/messages/'+editMessage.id, {
+            method:'PATCH',
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: messageSenderRef.current.children[1].children[0].value,
+                isUpdated: true
+            })
+        })
+        setInEdit(false) ;
+        socket.emit('send-messages-to-'+conversationID);
         messageSenderRef.current.value = '' ;
     }
     const sendMessage = async () => {
@@ -70,23 +83,27 @@ export default function ({}) {
                     conversationID: conversationID,
                     text: messageSenderRef.current.children[1].children[0].value
                 })
-            })
+            });
             socket.emit('send-messages-to-'+conversationID);
             messageSenderRef.current.children[1].children[0].value = "" ;
         }
 
     }
 
-    const deleteMessage = () => {
-
+    const deleteMessage = async (message) => {
+        await fetch('http://localhost:4000/api/messages/'+message.id, {
+            method:'DELETE',
+            headers: {
+                authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token'),
+            }
+        });
+        socket.emit('send-messages-to-'+conversationID);
     }
 
-    const editMessage = () => {
-
-    }
-
-    const reportMessage = () => {
-
+    const editAMessage = (message) => {
+        setInEdit(true) ;
+        setEditMessage(message) ;
+        messageSenderRef.current.children[1].children[0].value = message.text ;
     }
 
     const onMouseLeave = (index) => {
@@ -121,8 +138,7 @@ export default function ({}) {
                                         return (
                                             <Message message={message} key={index} isUpdated={message.isUpdated}
                                                      onDelete={() => deleteMessage(message)}
-                                                     onEdit={() => editMessage(message)}
-                                                     onReport={() => reportMessage(message)}
+                                                     onEdit={() => editAMessage(message)}
                                                      user={getUserById(message.senderID)}
                                                      onRefAdd={onMenusRefAdd}
                                                      index={index}

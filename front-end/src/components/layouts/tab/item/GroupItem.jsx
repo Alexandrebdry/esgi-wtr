@@ -1,7 +1,7 @@
 import {Grid, IconButton, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {DeleteForever, Lock, LockOpen, Settings} from "@mui/icons-material";
 import {color_green, color_red} from "../../../../services/colors";
-import {addToGroup, deleteGroup, getGroupsServices} from "../../../../services/groupServices";
+import { deleteGroup, getGroupsServices} from "../../../../services/groupServices";
 import {useContext, useEffect, useState} from "react";
 import {SnackbarContext} from "../../../provider/SnackbarProvider";
 import {DialogContext} from "../../../provider/DialogProvider";
@@ -23,7 +23,9 @@ export default function ({group, del}) {
 
     const getMembers = async () => {
         const response = await getGroupsServices('?groupId=' + group.id) ;
-        setMembers(await response.json()) ;
+        const members =await response.json() ;
+        setMembers(members.members) ;
+
     }
     const submitForm = () => {
         closeDialog();

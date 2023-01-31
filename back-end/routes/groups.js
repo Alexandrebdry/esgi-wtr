@@ -21,7 +21,7 @@ router.get('/members', async (req,res) => {
         }
         if(!groups) return res.sendStatus(404);
 
-        res.json(groups.flat());
+        res.json({members: members, groups:groups.flat()});
     } catch (err) {res.sendStatus(500);console.error(err);}
 }) ;
 router.get('/groups', async (req, res) => {
