@@ -25,7 +25,8 @@ export default function ({group}) {
 
     const getMembers = async () => {
         const response = await getGroupsServices('?groupId=' + group.id) ;
-        setMembers(await response.json()['members']) ;
+        const members = await response.json();
+        setMembers(members.members) ;
     }
     const askToJoin = async (group) => {
         try {
@@ -90,7 +91,7 @@ export default function ({group}) {
             </Box>
 
             <Box display={"flex"} justifySelf={"flex-end"}>
-                <Typography mr={2}>{ members.length + '/' +  group.maxUsers}</Typography>
+                <Typography mr={2}>{ members?.length + '/' +  group.maxUsers}</Typography>
                 {group.isPrivate ? <Lock  sx={{color: color_white}}/> : <LockOpen sx={{color: color_white}}/> }
             </Box>
         </Box>
