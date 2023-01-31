@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Stack, Button, Typography} from '@mui/material';
-import { color_white, color_red, color_red_hover } from '../../services/colors';
+import { color_white, color_red, color_red_hover } from '../../../services/colors';
 
 const WorkFlow3 = () => {
   const [contact, setContact] = useState(['Adresse mail', 'Numéro de téléphone'])

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { color_white, color_red, color_red_hover } from '../../services/colors';
+import { color_white, color_red, color_red_hover } from '../../../services/colors';
 import { QuestionAnswer, Cancel, Home } from '@mui/icons-material';
-import "../../styles/chatbox.css";
-import chatbotImage from "../../../public/images/bot_image.jpg";
+import "../../../styles/chatbox.css";
+import chatbotImage from "../../../../public/images/bot_image.jpg";
 import WorkFlow1 from './Workflow1.jsx';
 import WorkFlow2 from './Workflow2.jsx';
 import WorkFlow3 from './Workflow3.jsx';
@@ -46,13 +46,18 @@ const Chat = () => {
       {show &&
         <Stack className="chatbot">
           <Stack className="bot_wrapper">
-            <Stack className="bot_content">
-              <Box className="bot_header" display={'flex'}>
+            <Stack >
+              <Box className="bot_header" display={'flex'}  alignItems={'center'}>
                 <img src={chatbotImage} alt="robot" />
-                <Typography fontSize="1.5rem" ml={2}>Robott</Typography>
-                <Cancel sx={{color: color_red, marginLeft: '15vh', cursor:'pointer'}} onClick={() => closeChat()} />
+                <Typography variant={"body1"}  ml={2}>Tachyon262</Typography>
+                <Box flex={1}/>
+                <Box display={"flex"}  >
+                  <Home sx={{ cursor:'pointer', textAlign: 'center', mr:'2px'}}  onClick={() => resetIndex()} />
+                  <Cancel sx={{color: color_red,  cursor:'pointer'}} onClick={() => closeChat()} />
+                </Box>
+
               </Box>
-              <Home sx={{ cursor:'pointer', textAlign: 'center', ml: '15vh'}} onClick={() => resetIndex()} />
+
               <Stack minHeight={'250px'} justifyContent={'center'}>
               {
                 !isStart &&

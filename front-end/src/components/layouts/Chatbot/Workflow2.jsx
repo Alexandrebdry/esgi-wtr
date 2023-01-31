@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import { color_red, color_red_hover } from '../../services/colors';
-import {UserContext} from "../provider/UserProvider";
-import {getCreneauIs, patchCreneau} from "../../services/creneauServices";
+import { color_red, color_red_hover } from '../../../services/colors';
+import {UserContext} from "../../provider/UserProvider";
+import {getCreneauIs, patchCreneau} from "../../../services/creneauServices";
 import { Stack, Button, Typography } from '@mui/material';
 
 const WorkFlow2 = () => {

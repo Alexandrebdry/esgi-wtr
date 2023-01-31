@@ -1,8 +1,8 @@
 import {Grid, IconButton, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {DeleteForever, Lock, LockOpen, Settings} from "@mui/icons-material";
 import {color_green, color_red} from "../../../../services/colors";
-import {addToGroup, deleteGroup} from "../../../../services/groupServices";
-import {useContext} from "react";
+import {addToGroup, deleteGroup, getGroupsServices} from "../../../../services/groupServices";
+import {useContext, useEffect, useState} from "react";
 import {SnackbarContext} from "../../../provider/SnackbarProvider";
 import {DialogContext} from "../../../provider/DialogProvider";
 import _fromGroup from "../../forms/_fromGroup";
@@ -16,6 +16,15 @@ export default function ({group, del}) {
     const {openSnackbar} = useContext(SnackbarContext) ;
     const {setTitle, setContent, openDialog, closeDialog} = useContext(DialogContext) ;
     const {user} = useContext(UserContext) ;
+    const [members, setMembers] = useState(0) ;
+    useEffect(() => {
+        getMembers() ;
+    },[]);
+
+    const getMembers = async () => {
+        const response = await getGroupsServices('?groupId=' + group.id) ;
+        setMembers(await response.json()) ;
+    }
     const submitForm = () => {
         closeDialog();
     }
@@ -80,7 +89,7 @@ export default function ({group, del}) {
         <ListItemButton divider  >
             <ListItemIcon> {group.isPrivate ? <Lock sx={{color: color_red}}/> : <LockOpen sx={{color: color_green}}/> } </ListItemIcon>
             <ListItemText  sx={{width:{xs: '15%', sm:'10%'}}} primary={group.name} secondary={group.description? group.description : 'aucune description'}/>
-            <ListItemText  sx={{width:'5%'}} primary={ group.members.length + '/' +  group.maxUsers}/>
+            <ListItemText  sx={{width:'5%'}} primary={ members.length + '/' +  group.maxUsers}/>
             <ListItemText  sx={{width:'15%', display:{xs: 'none', sm:'block'}}} onClick={() => {showList()}} primary={ group.requests?.length ? 'demande en attente : ' + group.requests.length : 'aucune demande' }/>
             <ListItemIcon> <IconButton onClick={()=> {editGroup()}}> <Settings/> </IconButton> </ListItemIcon>
             <ListItemIcon> <IconButton onClick={() => {confirmDelete()}} > <DeleteForever sx={{color: color_red}}/> </IconButton> </ListItemIcon>

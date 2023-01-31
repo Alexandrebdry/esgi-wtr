@@ -1,8 +1,8 @@
 import {Box, IconButton, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {color_green, color_red} from "../../../../services/colors";
 import {Close, Done, Group} from "@mui/icons-material";
-import {addToGroup, getGroup} from "../../../../services/groupServices";
-import {useContext} from "react";
+import {addToGroup, addToGroupServices, getGroup, getGroupsServices} from "../../../../services/groupServices";
+import {useContext, useEffect, useState} from "react";
 import {SnackbarContext} from "../../../provider/SnackbarProvider";
 import {DialogContext} from "../../../provider/DialogProvider";
 import {deleteAsk} from "../../../../services/askServices";
@@ -13,7 +13,15 @@ export default function ({list}) {
     const {openSnackbar} = useContext(SnackbarContext) ;
     const {closeDialog} = useContext(DialogContext) ;
     const {setIsGroupChanged} = useContext(GroupContext) ;
+    const [members,setMembers] = useState(0) ;
+    useEffect(() => {
+        getMembers() ;
+    },[]);
 
+    const getMembers = async () => {
+        const response = await getGroupsServices('?groupId=' +list.groupID) ;
+        setMembers(await response.json()) ;
+    }
     const getGroupToJoin = async () => {
         try {
             const res = await getGroup(list.groupID) ;
@@ -24,8 +32,8 @@ export default function ({list}) {
     const joinGroup = async () => {
         try {
             const group = await getGroupToJoin() ;
-            if(group.maxUsers > group.members.length) {
-                const res = await addToGroup(list.userID, group) ;
+            if(group.maxUsers > members.length) {
+                const res = await addToGroupServices(list.userID, group) ;
                 if(res.status <300) {
                     await deleteAsk(list.id) ;
                     openSnackbar(`${list.user_id.firstName} a été ajouté au groupe`) ;

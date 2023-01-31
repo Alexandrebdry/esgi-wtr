@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { color_white, color_red, color_red_hover } from '../../services/colors';
-import FormButton from "../layouts/button/FormButton";
-import {getCreneaux, patchCreneau} from "../../services/creneauServices";
-import {UserContext} from "../provider/UserProvider";
+import { color_white, color_red, color_red_hover } from '../../../services/colors';
+import FormButton from "../button/FormButton";
+import {getCreneaux, patchCreneau} from "../../../services/creneauServices";
+import {UserContext} from "../../provider/UserProvider";
 import { Stack, Box, Typography, Button, FilledInput, TextField, FormControlLabel, RadioGroup, Radio } from "@mui/material";
 
 export default function WorkFlow1() {

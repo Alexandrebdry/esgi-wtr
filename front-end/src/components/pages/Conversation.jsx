@@ -1,10 +1,12 @@
 import {useParams} from "react-router-dom";
 import {UserContext} from "@/components/provider/UserProvider";
 import {useContext, useEffect, useRef, useState} from "react";
+
 import {GroupContext} from "@/components/provider/GroupProvider";
 import {Box, Grid, List} from "@mui/material";
 import {EditSender, NotAllowedSender, Sender} from "@/components/layouts/message/Sender";
 import {Message} from "@/components/layouts/message/Message";
+import {SocketContext} from "@/components/provider/SocketProvider";
 
 export default function ({}) {
 
@@ -16,6 +18,28 @@ export default function ({}) {
     const [canSpeak, setCanSpeak] = useState(true) ;
     const [inEdit, setInEdit] = useState(false) ;
     const [loading, setLoading] = useState(true) ;
+    const {socket} = useContext(SocketContext) ;
+
+    useEffect(() =>{
+        socket.emit('join-channel', {id: conversationID}) ;
+
+        socket.on('read-message-from-'+conversationID, message => {
+            setMessages(message) ;
+        }) ;
+
+        getMessages() ;
+
+    },[]) ;
+
+
+    const getMessages = async () => {
+        const response = await fetch('http://localhost:4000/api/messages', {
+            headers:{
+                authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token')
+            }
+        });
+        setMessages(await response.json()) ;
+    }
 
     const menusRef = useRef([]) ;
     const onMenusRefAdd = (elm, key) => {
@@ -33,7 +57,23 @@ export default function ({}) {
         setInEdit(true) ;
         messageSenderRef.current.value = '' ;
     }
-    const sendMessage = () => {
+    const sendMessage = async () => {
+        if(messageSenderRef.current.children[1].children[0].value !== "") {
+            await fetch('http://localhost:4000/api/messsages', {
+                method:'POST',
+                headers: {
+                    authorization: 'Bearer ' + localStorage.getItem('esgi-wtr-user-token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    authorID: user.id,
+                    conversationID: conversationID,
+                    text: messageSenderRef.current.children[1].children[0].value
+                })
+            })
+            socket.emit('send-messages-to-'+conversationID);
+            messageSenderRef.current.children[1].children[0].value = "" ;
+        }
 
     }
 
@@ -67,87 +107,56 @@ export default function ({}) {
     },[user]) ;
 
     return (
-        <Box paddingTop={20}>
-            <Grid container width={'100%'} height={'80vh'}>
-                {
-                    ! loading &&
-                    <List sx={{height:'75vh', overflow:'auto', width:'100%', display:'flex', flexDirection:'column', justifyContent:'flex-end'}}  >
-                        {
-                            messages.length > 0 &&
-                            messages.map((message, index) => {
-                                return (
-                                    <Message message={message} key={index} isUpdated={message.isUpdated}
-                                             onDelete={() => deleteMessage(message)}
-                                             onEdit={() => editMessage(message)}
-                                             onReport={() => reportMessage(message)}
-                                             user={getUserById(message.senderID)}
-                                             onRefAdd={onMenusRefAdd}
-                                             index={index}
-                                             onMouseLeave={() => onMouseLeave(index)}
-                                             onMouseOver={() => onMouseOver(index)}
-                                    />
-                                )
-                            })
-                        }
-                        <Message
-                            message={{
-                                text: 'Hello world',
-                                senderID : user?.id ,
-                            }} isUpdated={false}
-                            user={user}
-                            onMouseLeave={() => onMouseLeave(0)}
-                            onMouseOver={() => onMouseOver(0)}
-                            index={0}
-                            onRefAdd={onMenusRefAdd}
+        <>
 
-                        />
-                        <Message
-                            message={{
-                                text: 'Hello world',
-                                senderID : user?.id + 1 ,
-                            }} isUpdated={false}
-                            user={user}
-                            onMouseLeave={() => onMouseLeave(1)}
-                            onMouseOver={() => onMouseOver(1)}
-                            index={1}
-                            onRefAdd={onMenusRefAdd}
-                        />
-                        <Message
-                            message={{
-                                text: 'Hello world',
-                                senderID : user?.id ,
-                            }} isUpdated={false}
-                            user={user}
-                            onMouseLeave={() => onMouseLeave(2)}
-                            onMouseOver={() => onMouseOver(2)}
-                            index={2}
-                            onRefAdd={onMenusRefAdd}
+            <Box pt={6}>
+                <Grid container width={'100%'} height={'80vh'} >
+                    {
+                        ! loading &&
+                        <List sx={{ overflowY:'auto', width:'100%', height:'80vh'}}  >
 
-                        />
-                    </List>
-                }
+                                {
+                                    messages.length > 0 &&
+                                    messages.map((message, index) => {
+                                        return (
+                                            <Message message={message} key={index} isUpdated={message.isUpdated}
+                                                     onDelete={() => deleteMessage(message)}
+                                                     onEdit={() => editMessage(message)}
+                                                     onReport={() => reportMessage(message)}
+                                                     user={getUserById(message.senderID)}
+                                                     onRefAdd={onMenusRefAdd}
+                                                     index={index}
+                                                     onMouseLeave={() => onMouseLeave(index)}
+                                                     onMouseOver={() => onMouseOver(index)}
+                                            />
+                                        )
+                                    })
+                                }
 
-            </Grid>
-            <Box position={"absolute"} bottom={10} width={'100vw'}>
-                {
-                    canSpeak ?
-                        inEdit ?
-                            <EditSender
-                                editFunction={confirmEdit}
-                                cancelFunction={cancelEdit}
-                                messageRef={messageSenderRef}
-                            />
+                        </List>
+                    }
+
+                </Grid>
+                <Box position={"absolute"} bottom={10} width={'100vw'}>
+                    {
+                        canSpeak ?
+                            inEdit ?
+                                <EditSender
+                                    editFunction={confirmEdit}
+                                    cancelFunction={cancelEdit}
+                                    messageRef={messageSenderRef}
+                                />
+                                :
+                                <Sender
+                                    messageRef={messageSenderRef}
+                                    sendMessage={sendMessage}
+                                />
                             :
-                            <Sender
-                                messageRef={messageSenderRef}
-                                sendMessage={sendMessage}
-                            />
-                        :
-                        <NotAllowedSender/>
-                }
+                            <NotAllowedSender/>
+                    }
+                </Box>
             </Box>
-        </Box>
-
+        </>
     )
 
 

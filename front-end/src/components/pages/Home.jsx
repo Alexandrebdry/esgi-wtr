@@ -5,7 +5,7 @@ import {Box, Stack, Typography} from "@mui/material";
 
 import {text_color, color_white} from "../../services/colors";
 import FormButton from "../layouts/button/FormButton";
-import Chat from "../layouts/Chat";
+import Chat from "../layouts/Chatbot/Chat";
 
 
 export default function ({}) {

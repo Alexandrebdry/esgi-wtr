@@ -1,17 +1,36 @@
 const {Router} = require('express');
-const {Group, Ask, User, Conversation, Message} = require("../models");
+const {Group, Ask, User, Conversation, Message, GroupMember} = require("../models");
 const {body} = require("express-validator");
 const router = Router();
 
+
+router.get('/members', async (req,res) => {
+    try {
+        const members = await GroupMember.findAll({
+            where: {...req.query},
+            paranoid: true
+        });
+        if(!members) return res.sendStatus(404);
+        const groups = []  ;
+        for (const member of members) {
+            const group = await Group.findAll({
+               id: member.groupId
+            }) ;
+            groups.push(group);
+
+        }
+        if(!groups) return res.sendStatus(404);
+
+        res.json(groups.flat());
+    } catch (err) {res.sendStatus(500);console.error(err);}
+}) ;
 router.get('/groups', async (req, res) => {
     
     try {
         const groups = await Group.findAll({
             where: {...req.query},
             include: [
-                {model: User, through: 'conversations', as:'members', attributes: [
-                        'id', 'email','firstName','lastName','avatar','role'
-                    ]},
+
                 {model: User,  as: 'owner_id', attributes: [
                     'id', 'email','firstName','lastName','avatar','role'
                 ]},
@@ -41,6 +60,13 @@ router.get('/groups/:id', async (req, res) => {
         } catch (err) {res.sendStatus(500);console.error(err);}
 });
 
+router.post('/groups/add', async (req,res) => {
+    try {
+        const groupMember = GroupMember.create(req.body);
+        res.status(201).json(groupMember);
+    }catch (err) {res.sendStatus(500);console.error(err);}
+});
+
 router.post('/groups',
     body('maxUsers').isInt({min: 2}),
     body('ownerID').isInt(),
@@ -48,6 +74,7 @@ router.post('/groups',
     async (req, res) => {
         try {
             const group = await Group.create(req.body);
+            await GroupMember.create({userId: req.body.ownerID, groupId: group.id}) ;
             res.status(201).json(group);
         } catch (err) {res.sendStatus(500);console.error(err);}
 });

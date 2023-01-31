@@ -5,6 +5,7 @@ exports.Group = require('./entity/Group');
 exports.Ask = require('./entity/Ask');
 exports.Agenda = require('./entity/Agenda');
 exports.Conversation = require('./entity/Conversation') ;
+exports.GroupMember = require('./entity/GroupMember') ;
 
 
 // Messages
@@ -15,15 +16,20 @@ exports.Group.hasMany(exports.Message, {as: 'messages', foreignKey: 'groupID', o
 exports.Message.belongsTo(exports.User, {as: 'sender_id', foreignKey: 'senderID'});
 exports.Message.belongsTo(exports.User, {as: 'receiver_id', foreignKey: 'receiverID'});
 exports.Message.belongsTo(exports.Group, {as: 'group_id', foreignKey: 'groupID'});
+exports.Message.belongsTo(exports.Conversation) ;
+
 
 // Group
 exports.User.hasMany(exports.Group, {as: 'groups_owner', foreignKey: 'ownerID', onDelete: 'CASCADE', hooks: true});
 exports.Group.belongsTo(exports.User, {as: 'owner_id', foreignKey: 'ownerID'});
 
+exports.Conversation.hasMany(exports.Group,{as:'groups', foreignKey: 'conversationID', onDelete: 'CASCADE', hooks: true});
+
+
 // Group members
-exports.Group.belongsToMany(exports.User, {through: 'conversations',as: 'members' ,foreignKey: 'groupID', onDelete:'CASCADE', hooks: true});
-exports.User.belongsToMany(exports.Group, {through: 'conversations',as: 'members' ,foreignKey: 'userID', onDelete:'CASCADE', hooks: true});
-exports.User.belongsToMany(exports.User,{through: 'conversations', as:'answers', foreignKey: 'answerID', onDelete:'CASCADE', hooks: true});
+exports.Group.hasMany(exports.GroupMember, {as: 'members' , onDelete:'CASCADE', hooks: true});
+
+
 
 // Ask
 exports.Group.hasMany(exports.Ask, {as: 'requests', foreignKey: 'groupID', onDelete:'CASCADE', hooks: true});

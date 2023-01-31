@@ -48,7 +48,25 @@ export const createGroup = async (group) => {
     try {
         const newGroup = await data.json() ;
         await addToGroup(newGroup.ownerID, newGroup) ;
+
+
     } catch(err){ return err }
+
+};
+
+export const addToGroupServices = async (userID,group) => {
+    const data = await fetch(path+'/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`
+        },
+        body: JSON.stringify({
+            userId: userID,
+            groupId : group.id
+        })
+    });
+    return data ;
 
 };
 
@@ -63,7 +81,6 @@ export const addToGroup = async (user,group) => {
             userID: user,
             groupID: group.id,
             name: group.name,
-            avatar: group?.avatar ?? null
         })
     })
 };
@@ -88,4 +105,11 @@ export const getConversations = async (user) => {
       headers:{authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`}
   }) ;
 };
+
+export const getGroupsServices = async ( url) => {
+    return await fetch(basePath+ '/members' + url , {
+        headers:{authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`}
+    }) ;
+};
+
 

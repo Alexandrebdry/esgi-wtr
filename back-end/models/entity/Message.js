@@ -11,10 +11,12 @@ Message.init({
     isRead: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false
     },
     isUpdated: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false
     },
     isModerated: {
         type: DataTypes.BOOLEAN,

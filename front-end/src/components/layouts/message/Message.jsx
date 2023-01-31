@@ -16,7 +16,7 @@ function HeaderMessage ({user, message}) {
 function BaseTextMessage ({message, user, children}) {
 
     return (
-        <ListItem   sx={{maxWidth:'50%', width:'fit-content', display:'flex', flexDirection:'column', alignItems:  'flex-start'}} >
+        <ListItem   sx={{ width:'fit-content', display:'flex', flexDirection:'column', alignItems:  'flex-start'}} >
             <HeaderMessage user={user} message={message}/>
             <Grid container sx={{justifyContent: message.senderID === user?.id ? 'flex-end' : ''}} >
                 <Grid sx={{padding: '5px 15px', backgroundColor: message.senderID === user?.id ? color_red : color_green, height:'20px'}} borderRadius={'10px'}  item xs={12}  >
@@ -33,7 +33,7 @@ function BaseMessage ({message, user, onMouseLeave, onMouseOver ,children}) {
             <ListItem
                 onMouseLeave={onMouseLeave}
                 onMouseOver={onMouseOver}
-                sx={{maxWidth:'50%', width:'fit-content', display:'flex', flexDirection:'column', alignItems:  'flex-start'}}
+                sx={{width:'fit-content', display:'flex', flexDirection:'column', alignItems:  'flex-start'}}
             >
                 <HeaderMessage user={user} message={message}/>
                 <Grid container sx={{justifyContent: message.senderID  === user?.id ? 'flex-end' : ''}}>

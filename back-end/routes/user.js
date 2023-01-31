@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {User} = require("../models");
+const {User, Group, Conversation} = require("../models");
 const {body} = require("express-validator");
 const router = Router();
 
@@ -35,5 +35,17 @@ router.put('/setUserStatus/:id', async (req, res) => {
     }
     
 });
+
+router.patch('/users/:id', async(req,res) => {
+    try {
+        const user = await User.findOne({
+            where: {id: req.params.id},
+            paranoid: true
+        });
+        if(!user) return res.sendStatus(404);
+        await user.update(req.body);
+        res.json(user);
+    } catch (err) {res.sendStatus(500);console.error(err);}
+})
 
 module.exports = router;

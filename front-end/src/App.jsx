@@ -4,22 +4,28 @@ import SnackbarProvider from "./components/provider/SnackbarProvider";
 import Header from "./components/layouts/Header";
 import GroupProvider from "./components/provider/GroupProvider";
 import DialogProvider from "./components/provider/DialogProvider";
+import SocketProvider from "./components/provider/SocketProvider";
 
 function App() {
 
     return (
-        <UserProvider>
-            <GroupProvider>
-                <SnackbarProvider>
-                    <DialogProvider>
-                        <div className="app">
-                            <Header/>
-                            <Router/>
-                        </div>
-                    </DialogProvider>
-                </SnackbarProvider>
-            </GroupProvider>
-        </UserProvider>
+        <SocketProvider>
+            <UserProvider>
+
+                    <GroupProvider>
+                        <SnackbarProvider>
+                            <DialogProvider>
+                                <div className="app">
+                                    <Header/>
+                                    <Router/>
+                                </div>
+                            </DialogProvider>
+                        </SnackbarProvider>
+                    </GroupProvider>
+
+            </UserProvider>
+        </SocketProvider>
+
     );
 
 }

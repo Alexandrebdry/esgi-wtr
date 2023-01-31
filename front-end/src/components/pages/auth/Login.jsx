@@ -3,10 +3,11 @@ import {SnackbarContext} from "../../provider/SnackbarProvider";
 import {Avatar, Box, Grid, Link, TextField, Typography} from "@mui/material";
 import {Login} from "@mui/icons-material";
 import useScrollNavigate from "../../hooks/useScrollNavigate";
-import {loginService} from "../../../services/authServices";
+import {addSocketID, loginService} from "@/services/authServices";
 import {UserContext} from "../../provider/UserProvider";
-import {color_red} from "../../../services/colors";
+import {color_red} from "@/services/colors";
 import FormButton from "../../layouts/button/FormButton";
+import {SocketContext} from "@/components/provider/SocketProvider";
 
 
 export default function () {
@@ -16,6 +17,7 @@ export default function () {
     const {openSnackbar} = useContext(SnackbarContext) ;
     const {setUserInformation} = useContext(UserContext) ;
     const scrollNavigate = useScrollNavigate() ;
+    const {connectSocket} = useContext(SocketContext) ;
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -24,10 +26,13 @@ export default function () {
             return ;
         }
         try {
+            const sock = connectSocket() ;
             const user = await loginService(email, password) ;
             if(user?.message) throw new Error(user.message);
             setUserInformation(user) ;
             scrollNavigate("/") ;
+            console.log(sock) ;
+            await addSocketID({userId: user.id, socketId: sock.id}) ;
 
         }
         catch(err) {

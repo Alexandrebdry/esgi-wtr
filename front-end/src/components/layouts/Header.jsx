@@ -33,10 +33,11 @@ import {
 import {color_red, color_white} from "../../services/colors";
 import CustomList from "./list/CustomList";
 import CustomListItem from "./list/CustomListItem";
-import {createGroup, getConversations} from "../../services/groupServices";
+import {createGroup, getConversations, getGroupsServices} from "../../services/groupServices";
 import ChatIcon from "./chat/ChatIcon";
 import {SnackbarContext} from "../provider/SnackbarProvider";
 import {GroupContext} from "../provider/GroupProvider";
+import {addSocketID} from "@/services/authServices";
 
 const drawerWidth = 240;
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -65,11 +66,16 @@ export default function () {
         scrollNavigate(route) ;
     };
 
-    const logoutUser = () => {
+    const logoutUser = async () => {
+        try {
+            await addSocketID({userId: user.id, socketId: null}) ;
+        } catch(e) {}
+
         setUserInformation(null) ;
         setConversations(null) ;
         scrollNavigate('/login') ;
         openSnackbar('Vous avez été déconnecté','info');
+
     };
 
     const handleDrawerOpen = () => {
@@ -94,7 +100,10 @@ export default function () {
             if(user) {
                 const res = await getConversations(user.id) ;
                 const data = await res.json() ;
-                setConversations(data) ;
+
+                const response = await getGroupsServices('?userId=' + user.id) ;
+                const groups = await response.json() ;
+                setConversations(groups) ;
                 setIsGroupChanged(false) ;
 
             }
@@ -166,7 +175,7 @@ export default function () {
                             <CustomListItem text={"Mes conversations"} icon={<Message/>}/>
                             { conversations && conversations.map((convo, key) => {
                                 return (
-                                    <CustomListItem key={key} text={convo.name} icon={<ChatIcon groupID={convo.id} ownerID={convo.ownerID} />} clickEvent={()=>{scrollNavigate( `/conversation/${convo.groupID}`)}} />
+                                    <CustomListItem key={key} text={convo.name} icon={<ChatIcon groupID={convo.groupID} ownerID={convo.ownerID} />} clickEvent={()=>{scrollNavigate( `/conversation/${convo.id}`)}} />
                                 );
                             }) }
                         </>

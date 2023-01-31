@@ -4,6 +4,11 @@ const {DataTypes, Model} = require("sequelize");
 class Conversation extends Model {}
 
 Conversation.init({
+    id: {
+        type:DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement:true
+    },
     userID: {
         type: DataTypes.INTEGER,
         allowNull: false,

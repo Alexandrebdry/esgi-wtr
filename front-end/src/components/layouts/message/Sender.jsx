@@ -29,7 +29,7 @@ export function Sender ({messageRef, sendMessage}) {
                 <TextField ref={messageRef} id="outlined-basic-email" label="Type Something" fullWidth />
             </Grid>
             <Grid xs={1} item align="center">
-                <Fab onClick={() => sendMessage()} style={{background: color_red, color: color_white}}  aria-label="add"><Send /></Fab>
+                <Fab onClick={sendMessage} style={{background: color_red, color: color_white}}  aria-label="add"><Send /></Fab>
             </Grid>
         </Grid>
     )

@@ -1,9 +1,10 @@
-import {createContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {Backdrop, CircularProgress} from "@mui/material";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import useScrollNavigate from "../hooks/useScrollNavigate";
-import {refreshService, verifyTokenService} from "../../services/authServices";
+import {addSocketID, refreshService, verifyTokenService} from "../../services/authServices";
+import {SocketContext} from "@/components/provider/SocketProvider";
 
 export const UserContext = createContext({}) ;
 
@@ -13,6 +14,7 @@ const UserProvider = ({children}) => {
     const [loader, setLoader] = useState(true) ;
     const axiosJWT = axios.create();
     const  scrollNavigate  = useScrollNavigate() ;
+    const {connectSocket,socket} = useContext(SocketContext) ;
 
     const refreshToken = async () => {
         try {
@@ -49,17 +51,20 @@ const UserProvider = ({children}) => {
         } else {
             if(token) {
                 verifyTokenService(token).then((response) => response.json()).then((data) => {
+
                    const user = data ;
                    if(user) setUser(user) ;
+
 
                 });
             }
             setLoader(false) ;
+            connectSocket() ;
         }
 
     },[user, loader]) ;
 
-    const setUserInformation = (information) => {
+    const setUserInformation = async (information) => {
         setUser(information) ;
         if(information === null) {
             localStorage.removeItem("esgi-wtr-user-token") ;
@@ -67,6 +72,7 @@ const UserProvider = ({children}) => {
         } else {
             localStorage.setItem("esgi-wtr-user-token", information.accessToken) ;
             setToken(information.accessToken) ;
+
         }
     }
 

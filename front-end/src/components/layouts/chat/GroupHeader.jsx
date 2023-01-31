@@ -3,9 +3,9 @@ import ChatIcon from "./ChatIcon";
 import {color_red, color_red_hover, color_white} from "../../../services/colors";
 import {Lock, LockOpen} from "@mui/icons-material";
 import FormButton from "../button/FormButton";
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import {DialogContext} from "../../provider/DialogProvider";
-import {addToGroup} from "../../../services/groupServices";
+import {addToGroupServices, getGroupsServices} from "../../../services/groupServices";
 import {SnackbarContext} from "../../provider/SnackbarProvider";
 import {GroupContext} from "../../provider/GroupProvider";
 import {UserContext} from "../../provider/UserProvider";
@@ -17,10 +17,19 @@ export default function ({group}) {
     const {setIsGroupChanged} = useContext(GroupContext) ;
     const {user} = useContext(UserContext) ;
     const {setTitle, setContent, openDialog, closeDialog} = useContext(DialogContext) ;
+    const [members, setMembers] = useState([]) ;
 
+    useEffect(() => {
+        getMembers() ;
+    },[]);
+
+    const getMembers = async () => {
+        const response = await getGroupsServices('?groupId=' + group.id) ;
+        setMembers(await response.json()) ;
+    }
     const askToJoin = async (group) => {
         try {
-            if( group.maxUsers > group.members.length) {
+            if( group.maxUsers > members.length) {
                 const res = await sendAsk(user.id, group.id) ;
                 if(res.status < 300) {
                     openSnackbar('Votre demande à bien été envoyé') ;
@@ -31,8 +40,8 @@ export default function ({group}) {
     } ;
     const joinGroup = async ( group) => {
         try {
-            if(group.maxUsers > group.members.length) {
-                const res = await addToGroup(user.id, group);
+            if(group.maxUsers > members.length) {
+                const res = await addToGroupServices(user.id, group);
                 if (res.status < 300) {
                     openSnackbar('Vous avez rejoint le groupe');
                     setIsGroupChanged(true);
@@ -81,7 +90,7 @@ export default function ({group}) {
             </Box>
 
             <Box display={"flex"} justifySelf={"flex-end"}>
-                <Typography mr={2}>{ group.members.length + '/' +  group.maxUsers}</Typography>
+                <Typography mr={2}>{ members.length + '/' +  group.maxUsers}</Typography>
                 {group.isPrivate ? <Lock  sx={{color: color_white}}/> : <LockOpen sx={{color: color_white}}/> }
             </Box>
         </Box>

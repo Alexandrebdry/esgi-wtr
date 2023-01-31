@@ -1,4 +1,4 @@
-import {authPath} from "./basePath" ;
+import {authPath, basePath} from "./basePath" ;
 
 export const loginService = async (email, password) => {
     return await fetch(`${authPath}login`, {
@@ -66,6 +66,19 @@ export const confirmResetPassword = async (password, code) => {
         body: JSON.stringify({
             password:password,
             code : code
+        })
+    });
+}
+
+export const addSocketID = async ({userId, socketId}) => {
+    return fetch(`${basePath}users/${userId}`, {
+        method: 'PATCH',
+        headers:{
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${localStorage.getItem('esgi-wtr-user-token')}`
+        },
+        body: JSON.stringify({
+            socketId: socketId
         })
     });
 }
