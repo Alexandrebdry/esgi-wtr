@@ -25,12 +25,11 @@ export default function ({}) {
 
         socket.on('read-message-from-'+conversationID, message => {
             setMessages(message) ;
-
         }) ;
 
         getMessages() ;
 
-    },[]) ;
+    },[conversationID]) ;
 
 
     const getMessages = async () => {
