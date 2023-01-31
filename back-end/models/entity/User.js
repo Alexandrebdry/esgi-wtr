@@ -1,6 +1,5 @@
 const {DataTypes, Model} = require( "sequelize");
 const connection = require( "../database");
-const SequelizeSlugify = require('sequelize-slugify');
 const bcrypt = require('bcryptjs');
 
 class User extends Model {}
@@ -28,13 +27,7 @@ User.init({
     role: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    slug: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: true,
-    },
-    avatar: {
+    },    avatar: {
         type: DataTypes.STRING,
         allowNull: true,
     },
@@ -50,6 +43,15 @@ User.init({
     resetPasswordToken: {
         type: DataTypes.STRING,
         allowNull: true,
+    },
+    isOnline:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    socketId: {
+        type:DataTypes.STRING,
+        allowNull: true
     }
 },
     {
@@ -59,9 +61,7 @@ User.init({
     }
 );
 
-SequelizeSlugify.slugifyModel(User, {
-    source: ['firstName', 'lastName']
-});
+
 
 User.addHook('beforeCreate', async (user) => {
     user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());

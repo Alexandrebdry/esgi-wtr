@@ -1,0 +1,16 @@
+html {
+    background-color: #F3F3F3 ;
+    color: #6C6C6C ;
+    margin:0;
+    padding: 0;
+}
+body {
+    margin: 0;
+    font-family:'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+* {
+    box-sizing: border-box;
+}

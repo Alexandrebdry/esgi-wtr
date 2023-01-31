@@ -3,6 +3,17 @@ import {Route, Routes} from "react-router-dom";
 import {Suspense} from "react";
 import NotFound from "../pages/errors/NotFound";
 import Home from "../pages/Home";
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
+import RegisterConfirmation from "../pages/auth/RegisterConfirmation";
+import ForgetPassword from "../pages/auth/ForgetPassword";
+import ChangePassword from "../pages/auth/ChangePassword";
+import MyGroups from "../pages/user/MyGroups";
+import Groups from "../pages/Groups";
+import AdvisorHome from "../pages/advisors/home";
+import { UserContext } from "../provider/UserProvider";
+import { SCOPES } from "./permissions";
+import Conversation from "../pages/Conversation";
 
 export const useRoutes = () => {
     const routes = [
@@ -15,11 +26,85 @@ export const useRoutes = () => {
                 </RouterSecured>
         },
         {
+            name:'login',
+            path: '/login',
+            element:
+            <RouterSecured>
+                <Login/>
+            </RouterSecured>
+        },
+        {
+            name: 'register',
+            path: '/register',
+            element:
+                <RouterSecured>
+                    <Register/>
+                </RouterSecured>
+        },
+        {
+            name: 'forget-password',
+            path: '/forget-password',
+            element:
+                <RouterSecured>
+                    <ForgetPassword/>
+                </RouterSecured>
+        },
+        {
+            name: 'reset-password',
+            path: '/reset-password/:code',
+            element:
+                <RouterSecured>
+                    <ChangePassword/>
+                </RouterSecured>
+
+        },
+        {
+            name: 'registerConfirmation',
+            path: '/confirmation/:confirmation',
+            element:
+                <RouterSecured>
+                    <RegisterConfirmation/>
+                </RouterSecured>
+        },
+        {
+            name:'myGroups',
+            path:'my-groups',
+            element:
+                <RouterSecured>
+                    <MyGroups/>
+                </RouterSecured>
+        },
+        {
+            name: 'groups',
+            path: 'groups',
+            element:
+                <RouterSecured>
+                    <Groups/>
+                </RouterSecured>
+        },
+        {
             name:'not-found',
             path: '*',
             element:
                 <NotFound/>
+        },
+        {
+            name: 'AdvisorHome',
+            path: '/advisor/home',
+            element:
+                <RouterSecured scopes={[SCOPES.ADVISOR]}>
+                    <AdvisorHome/>
+                </RouterSecured>
+        },
+        {
+            name:'conversation',
+            path: 'conversation/:id',
+            element:
+                <RouterSecured>
+                    <Conversation/>
+                </RouterSecured>
         }
+
     ] ;
 
     return routes.map((route) => {

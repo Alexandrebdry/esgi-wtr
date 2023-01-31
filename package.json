@@ -5,5 +5,9 @@
   "workspaces": [
     "front-end",
     "back-end"
-  ]
+  ],
+  "dependencies": {
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4"
+  }
 }
