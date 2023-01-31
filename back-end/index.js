@@ -3,7 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const authMiddleware = require('./security/middleware/auth');
 const {Server} = require('socket.io');
-const {Conversation, Message} = require("./models");
+const {Conversation, Message, Group, Ask} = require("./models");
 
 const app = express();
 const whitelist = ['http://localhost:3000'] ;
@@ -34,7 +34,10 @@ app.get('/api/messages', authMiddleware, async(req,res) => {
     try{
         const messages = await Message.findAll({
             where: {...req.query},
-            paranoid: true
+            paranoid: true,
+            order: [
+                ['createdAt', 'ASC']
+            ]
         });
         if(!messages) return res.sendStatus(404) ;
         res.json(messages) ;
@@ -50,6 +53,27 @@ app.post('/api/messsages', authMiddleware, async(req,res) => {
         });
             return res.status(201).json(newMessage) ;
     } catch (err) {res.sendStatus(500);console.error(err);}
+}) ;
+
+app.patch('/api/messages/:id', authMiddleware, async(req,res) => {
+    try {
+        const messages = await Message.findOne({
+            where: {id: req.params.id},
+            paranoid: true
+        });
+        if(!messages) return res.sendStatus(404);
+        await messages.update(req.body);
+        res.json(messages);
+    } catch (err) {res.sendStatus(500);console.error(err);}
+}) ;
+
+app.delete('/api/messages/:id', authMiddleware, async (req,res) => {
+    try{
+        const message = await Message.findByPk(req.params.id ,{paranoid:true});
+        if(!message) return res.sendStatus(404) ;
+        await message.destroy() ;
+        res.sendStatus(204) ;
+    } catch(err){console.error(err); res.sendStatus(500);}
 }) ;
 
 const server = app.listen(process.env.PORT,() => {
@@ -71,7 +95,8 @@ io.on('connection', async function (socket) {
         const messages = await  Message.findAll({
             where: {
                 conversationId: channel.id
-            }
+            },
+            paranoid: true,
         }) ;
         io.emit('channel-'+channel.id , messages) ;
 
@@ -79,7 +104,10 @@ io.on('connection', async function (socket) {
             const messages = await  Message.findAll({
                 where: {
                     conversationId: channel.id
-                }
+                },
+                order: [
+                    ['createdAt', 'ASC']
+                ]
             }) ;
             io.emit('read-message-from-'+channel.id, messages) ;
         }) ;
