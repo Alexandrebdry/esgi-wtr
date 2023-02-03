@@ -24,6 +24,7 @@ EMAIL_MDP=cbezjahmnhuxaemz
 #Lancer le projet
 # L'installation des dépendances se fait via le docker compose. 
 docker compose up -d 
+npm install
 
 #Lancer une migration de la base de données 
 docker compose exec back-end npm run migrate --workspace=back-end 
